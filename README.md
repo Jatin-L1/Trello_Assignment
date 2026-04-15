@@ -1,5 +1,7 @@
 # 📋 Trello Clone - Project Management Tool
 
+![Trello Frontend Overview](preview.png)
+
 > **SDE Intern Fullstack Assignment**
 
 A full-stack Kanban-style project management web application that closely replicates Trello's design and user experience. 
