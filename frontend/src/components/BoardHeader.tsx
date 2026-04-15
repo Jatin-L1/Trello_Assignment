@@ -8,7 +8,7 @@ interface BoardHeaderProps {
   board: {
     id: string;
     title: string;
-    is_starred?: boolean;
+    isStarred?: boolean;
     members?: any[];
   };
 }
@@ -16,7 +16,15 @@ interface BoardHeaderProps {
 export default function BoardHeader({ board }: BoardHeaderProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [title, setTitle] = useState(board.title);
-  const { updateBoard } = useBoardStore();
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  
+  const { 
+    updateBoard, 
+    filterMembers, setFilterMembers, 
+    filterLabels, setFilterLabels, 
+    filterDueDate, setFilterDueDate,
+    currentBoard
+  } = useBoardStore();
 
   const handleSave = async () => {
     if (title.trim() && title !== board.title) {
@@ -26,7 +34,7 @@ export default function BoardHeader({ board }: BoardHeaderProps) {
   };
 
   const toggleStar = async () => {
-    await updateBoard(board.id, { is_starred: !board.is_starred });
+    await updateBoard(board.id, { is_starred: !board.isStarred });
   };
 
   return (
@@ -54,20 +62,83 @@ export default function BoardHeader({ board }: BoardHeaderProps) {
         <button
           onClick={toggleStar}
           className={`p-1.5 rounded transition-colors ${
-            board.is_starred
+            board.isStarred
               ? 'text-yellow-400 hover:bg-white/10'
               : 'text-white/70 hover:text-white hover:bg-white/10'
           }`}
         >
-          <Star className={`w-5 h-5 ${board.is_starred ? 'fill-current' : ''}`} />
+          <Star className={`w-5 h-5 ${board.isStarred ? 'fill-current' : ''}`} />
         </button>
       </div>
 
-      <div className="flex items-center gap-2">
-        <button className="flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white px-3 py-1.5 rounded transition-colors">
+      <div className="flex items-center gap-2 relative">
+        <button 
+          onClick={() => setIsFilterOpen(!isFilterOpen)}
+          className={`flex items-center gap-2 ${isFilterOpen ? 'bg-white/30' : 'bg-white/10 hover:bg-white/20'} text-white px-3 py-1.5 rounded transition-colors`}
+        >
           <Filter className="w-4 h-4" />
           <span className="text-sm font-medium">Filter</span>
         </button>
+
+        {isFilterOpen && (
+          <div className="absolute top-10 right-0 w-64 bg-white rounded shadow-xl z-50 text-trello-gray-900 text-sm overflow-hidden p-2">
+            <h3 className="font-semibold px-2 py-1 mb-1 border-b">Due Date</h3>
+            <label className="flex items-center gap-2 px-2 py-1 hover:bg-gray-100 cursor-pointer rounded">
+              <input 
+                type="checkbox" 
+                checked={filterDueDate} 
+                onChange={(e) => setFilterDueDate(e.target.checked)} 
+              />
+              Has Due Date
+            </label>
+
+            {currentBoard?.labels && currentBoard.labels.length > 0 && (
+              <>
+                <h3 className="font-semibold px-2 py-1 mt-2 mb-1 border-b">Labels</h3>
+                <div className="max-h-32 overflow-y-auto">
+                  {currentBoard.labels.map((label: any) => (
+                    <label key={label.id} className="flex items-center gap-2 px-2 py-1 hover:bg-gray-100 cursor-pointer rounded">
+                      <input 
+                        type="checkbox" 
+                        checked={filterLabels.includes(label.id)} 
+                        onChange={(e) => {
+                          if (e.target.checked) setFilterLabels([...filterLabels, label.id]);
+                          else setFilterLabels(filterLabels.filter(id => id !== label.id));
+                        }} 
+                      />
+                      <span className="w-4 h-4 rounded" style={{ backgroundColor: label.color }}></span>
+                      {label.name || 'Unnamed Label'}
+                    </label>
+                  ))}
+                </div>
+              </>
+            )}
+
+            {currentBoard?.members && currentBoard.members.length > 0 && (
+              <>
+                <h3 className="font-semibold px-2 py-1 mt-2 mb-1 border-b">Members</h3>
+                <div className="max-h-32 overflow-y-auto">
+                  {currentBoard.members.map((member: any) => (
+                    <label key={member.id} className="flex items-center gap-2 px-2 py-1 hover:bg-gray-100 cursor-pointer rounded">
+                      <input 
+                        type="checkbox" 
+                        checked={filterMembers.includes(member.id)} 
+                        onChange={(e) => {
+                          if (e.target.checked) setFilterMembers([...filterMembers, member.id]);
+                          else setFilterMembers(filterMembers.filter(id => id !== member.id));
+                        }} 
+                      />
+                      <div className="w-5 h-5 rounded-full bg-blue-500 flex items-center justify-center text-white text-xs">
+                        {member.full_name?.charAt(0).toUpperCase()}
+                      </div>
+                      {member.full_name}
+                    </label>
+                  ))}
+                </div>
+              </>
+            )}
+          </div>
+        )}
         
         <div className="flex items-center">
           {board.members?.slice(0, 4).map((member, index) => (

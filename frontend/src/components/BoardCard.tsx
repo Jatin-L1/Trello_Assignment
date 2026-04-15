@@ -2,8 +2,8 @@ interface BoardCardProps {
   board: {
     id: string;
     title: string;
-    background_color: string;
-    background_image?: string;
+    backgroundColor: string;
+    backgroundImage?: string;
   };
   onClick: () => void;
 }
@@ -14,8 +14,8 @@ export default function BoardCard({ board, onClick }: BoardCardProps) {
       onClick={onClick}
       className="h-32 rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-all duration-200 transform hover:scale-105 relative group"
       style={{
-        backgroundColor: board.background_image ? 'transparent' : board.background_color,
-        backgroundImage: board.background_image ? `url(${board.background_image})` : undefined,
+        backgroundColor: board.backgroundImage ? 'transparent' : board.backgroundColor,
+        backgroundImage: board.backgroundImage ? `url(${board.backgroundImage})` : undefined,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
       }}

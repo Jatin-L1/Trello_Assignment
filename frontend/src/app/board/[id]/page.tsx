@@ -34,17 +34,17 @@ export default function BoardPage() {
     );
   }
 
-  const backgroundColor = currentBoard.background_image 
+  const backgroundColor = currentBoard.backgroundImage 
     ? 'transparent' 
-    : currentBoard.background_color;
+    : currentBoard.backgroundColor;
 
   return (
     <div 
       className="min-h-screen flex flex-col"
       style={{ 
         backgroundColor,
-        backgroundImage: currentBoard.background_image 
-          ? `url(${currentBoard.background_image})` 
+        backgroundImage: currentBoard.backgroundImage 
+          ? `url(${currentBoard.backgroundImage})` 
           : undefined,
         backgroundSize: 'cover',
         backgroundPosition: 'center',

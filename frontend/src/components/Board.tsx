@@ -70,8 +70,8 @@ export default function Board({ board }: BoardProps) {
     if (!activeListId || !overListId) return;
 
     // Find the lists
-    const activeList = board.lists.find((l) => l.id === activeListId);
-    const overList = board.lists.find((l) => l.id === overListId);
+    const activeList = (board.lists || []).find((l) => l.id === activeListId);
+    const overList = (board.lists || []).find((l) => l.id === overListId);
 
     if (!activeList || !overList) return;
 
@@ -104,8 +104,8 @@ export default function Board({ board }: BoardProps) {
 
     if (activeType === 'list') {
       // Handle list reordering
-      const oldIndex = board.lists.findIndex((l) => l.id === activeId);
-      const newIndex = board.lists.findIndex((l) => l.id === overId);
+      const oldIndex = (board.lists || []).findIndex((l) => l.id === activeId);
+      const newIndex = (board.lists || []).findIndex((l) => l.id === overId);
 
       if (oldIndex !== newIndex) {
         optimisticMoveList(activeId, newIndex);
@@ -119,7 +119,7 @@ export default function Board({ board }: BoardProps) {
 
       if (!activeListId || !overListId) return;
 
-      const overList = board.lists.find((l) => l.id === overListId);
+      const overList = (board.lists || []).find((l) => l.id === overListId);
       if (!overList) return;
 
       let newPosition = 0;
@@ -136,13 +136,13 @@ export default function Board({ board }: BoardProps) {
   };
 
   const activeCard = activeType === 'card' && activeId
-    ? board.lists
+    ? (board.lists || [])
         .flatMap((l) => l.cards)
         .find((c) => c.id === activeId)
     : null;
 
   const activeList = activeType === 'list' && activeId
-    ? board.lists.find((l) => l.id === activeId)
+    ? (board.lists || []).find((l) => l.id === activeId)
     : null;
 
   return (
@@ -156,10 +156,10 @@ export default function Board({ board }: BoardProps) {
       <div className="flex-1 overflow-x-auto overflow-y-hidden">
         <div className="flex gap-3 p-4 h-full items-start">
           <SortableContext
-            items={board.lists.map((l) => l.id)}
+            items={(board.lists || []).map((l) => l.id)}
             strategy={horizontalListSortingStrategy}
           >
-            {board.lists.map((list) => (
+            {(board.lists || []).map((list) => (
               <List key={list.id} list={list} />
             ))}
           </SortableContext>

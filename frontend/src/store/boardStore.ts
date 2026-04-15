@@ -38,8 +38,9 @@ interface Board {
   id: string;
   title: string;
   description?: string;
-  background_color: string;
-  background_image?: string;
+  backgroundColor: string;
+  backgroundImage?: string;
+  isStarred?: boolean;
   lists: List[];
   labels: Label[];
   members: Member[];
@@ -51,10 +52,21 @@ interface BoardStore {
   loading: boolean;
   error: string | null;
   
+  // Search and Filter
+  searchQuery: string;
+  setSearchQuery: (query: string) => void;
+  // Options for filter: member id array, label id array, due date boolean
+  filterMembers: string[];
+  filterLabels: string[];
+  filterDueDate: boolean;
+  setFilterMembers: (members: string[]) => void;
+  setFilterLabels: (labels: string[]) => void;
+  setFilterDueDate: (show: boolean) => void;
+
   // Actions
   fetchBoards: () => Promise<void>;
   fetchBoard: (id: string) => Promise<void>;
-  createBoard: (data: any) => Promise<void>;
+  createBoard: (data: any) => Promise<any>;
   updateBoard: (id: string, data: any) => Promise<void>;
   deleteBoard: (id: string) => Promise<void>;
   
@@ -80,6 +92,14 @@ export const useBoardStore = create<BoardStore>((set, get) => ({
   currentBoard: null,
   loading: false,
   error: null,
+  searchQuery: '',
+  setSearchQuery: (query) => set({ searchQuery: query }),
+  filterMembers: [],
+  setFilterMembers: (members) => set({ filterMembers: members }),
+  filterLabels: [],
+  setFilterLabels: (labels) => set({ filterLabels: labels }),
+  filterDueDate: false,
+  setFilterDueDate: (show) => set({ filterDueDate: show }),
 
   fetchBoards: async () => {
     set({ loading: true, error: null });
@@ -105,8 +125,10 @@ export const useBoardStore = create<BoardStore>((set, get) => ({
     try {
       const response = await api.createBoard(data);
       set((state) => ({ boards: [response.data, ...state.boards] }));
+      return response;
     } catch (error: any) {
       set({ error: error.message });
+      throw error;
     }
   },
 
@@ -114,8 +136,8 @@ export const useBoardStore = create<BoardStore>((set, get) => ({
     try {
       const response = await api.updateBoard(id, data);
       set((state) => ({
-        currentBoard: state.currentBoard?.id === id ? response.data : state.currentBoard,
-        boards: state.boards.map((b) => (b.id === id ? response.data : b)),
+        currentBoard: state.currentBoard?.id === id ? { ...state.currentBoard, ...response.data } : state.currentBoard,
+        boards: state.boards.map((b) => (b.id === id ? { ...b, ...response.data } : b)),
       }));
     } catch (error: any) {
       set({ error: error.message });
@@ -142,7 +164,7 @@ export const useBoardStore = create<BoardStore>((set, get) => ({
           return {
             currentBoard: {
               ...state.currentBoard,
-              lists: [...state.currentBoard.lists, { ...response.data, cards: [] }],
+              lists: [...(state.currentBoard.lists || []), { ...response.data, cards: [] }],
             },
           };
         }
@@ -161,7 +183,7 @@ export const useBoardStore = create<BoardStore>((set, get) => ({
           return {
             currentBoard: {
               ...state.currentBoard,
-              lists: state.currentBoard.lists.map((list) =>
+              lists: (state.currentBoard.lists || []).map((list) =>
                 list.id === id ? { ...list, title } : list
               ),
             },
@@ -182,7 +204,7 @@ export const useBoardStore = create<BoardStore>((set, get) => ({
           return {
             currentBoard: {
               ...state.currentBoard,
-              lists: state.currentBoard.lists.filter((list) => list.id !== id),
+              lists: (state.currentBoard.lists || []).filter((list) => list.id !== id),
             },
           };
         }
@@ -214,7 +236,7 @@ export const useBoardStore = create<BoardStore>((set, get) => ({
           return {
             currentBoard: {
               ...state.currentBoard,
-              lists: state.currentBoard.lists.map((list) =>
+              lists: (state.currentBoard.lists || []).map((list) =>
                 list.id === listId
                   ? { ...list, cards: [...list.cards, { ...response.data, labels: [], members: [] }] }
                   : list
@@ -237,7 +259,7 @@ export const useBoardStore = create<BoardStore>((set, get) => ({
           return {
             currentBoard: {
               ...state.currentBoard,
-              lists: state.currentBoard.lists.map((list) => ({
+              lists: (state.currentBoard.lists || []).map((list) => ({
                 ...list,
                 cards: list.cards.map((card) =>
                   card.id === id ? { ...card, ...data } : card
@@ -261,7 +283,7 @@ export const useBoardStore = create<BoardStore>((set, get) => ({
           return {
             currentBoard: {
               ...state.currentBoard,
-              lists: state.currentBoard.lists.map((list) => ({
+              lists: (state.currentBoard.lists || []).map((list) => ({
                 ...list,
                 cards: list.cards.filter((card) => card.id !== id),
               })),
@@ -292,7 +314,7 @@ export const useBoardStore = create<BoardStore>((set, get) => ({
     set((state) => {
       if (!state.currentBoard) return state;
 
-      const newLists = state.currentBoard.lists.map((list) => ({ ...list, cards: [...list.cards] }));
+      const newLists = (state.currentBoard.lists || []).map((list) => ({ ...list, cards: [...list.cards] }));
       const sourceList = newLists.find((l) => l.id === sourceListId);
       const destList = newLists.find((l) => l.id === destListId);
 
@@ -322,7 +344,7 @@ export const useBoardStore = create<BoardStore>((set, get) => ({
     set((state) => {
       if (!state.currentBoard) return state;
 
-      const lists = [...state.currentBoard.lists];
+      const lists = [...(state.currentBoard.lists || [])];
       const listIndex = lists.findIndex((l) => l.id === listId);
       if (listIndex === -1) return state;
 

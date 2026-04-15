@@ -21,6 +21,9 @@ export default function CardModal({ cardId, onClose }: CardModalProps) {
   const [newComment, setNewComment] = useState('');
   const [newChecklistTitle, setNewChecklistTitle] = useState('');
   const [showAddChecklist, setShowAddChecklist] = useState(false);
+  const [showMembers, setShowMembers] = useState(false);
+  const [showLabels, setShowLabels] = useState(false);
+  const [showDates, setShowDates] = useState(false);
 
   const { updateCard, deleteCard, currentBoard } = useBoardStore();
 
@@ -111,6 +114,22 @@ export default function CardModal({ cardId, onClose }: CardModalProps) {
     loadCard();
   };
 
+  const handleToggleMember = async (memberId: string) => {
+    const hasMember = card.members?.some((m: any) => m.id === memberId);
+    if (hasMember) {
+      await api.removeMemberFromCard(cardId, memberId);
+    } else {
+      await api.addMemberToCard({ card_id: cardId, user_id: memberId });
+    }
+    loadCard();
+  };
+
+  const handleUpdateDate = async (date: string) => {
+    await updateCard(cardId, { due_date: date });
+    setShowDates(false);
+    loadCard();
+  };
+
   if (loading) {
     return (
       <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
@@ -170,26 +189,58 @@ export default function CardModal({ cardId, onClose }: CardModalProps) {
           <div className="flex gap-6">
             {/* Main Content */}
             <div className="flex-1 space-y-6">
-              {/* Labels */}
-              {card.labels && card.labels.length > 0 && (
-                <div>
-                  <div className="flex items-center gap-2 mb-2">
-                    <Tag className="w-5 h-5 text-trello-gray-700" />
-                    <h3 className="text-sm font-semibold text-trello-gray-900">Labels</h3>
+              {/* Properties (Members, Labels, Dates) */}
+              <div className="flex flex-wrap gap-4">
+                {card.members && card.members.length > 0 && (
+                  <div>
+                    <h3 className="text-xs font-semibold text-trello-gray-600 mb-1">Members</h3>
+                    <div className="flex flex-wrap gap-1">
+                      {card.members.map((member: any) => (
+                        <div
+                          key={member.id}
+                          className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-sm font-medium"
+                          title={member.full_name}
+                        >
+                          {member.full_name?.charAt(0).toUpperCase()}
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                  <div className="flex flex-wrap gap-1">
-                    {card.labels.map((label: any) => (
-                      <div
-                        key={label.id}
-                        className="px-3 py-1 rounded text-white text-sm font-medium"
-                        style={{ backgroundColor: label.color }}
-                      >
-                        {label.name || 'Label'}
-                      </div>
-                    ))}
+                )}
+
+                {card.labels && card.labels.length > 0 && (
+                  <div>
+                    <h3 className="text-xs font-semibold text-trello-gray-600 mb-1">Labels</h3>
+                    <div className="flex flex-wrap gap-1">
+                      {card.labels.map((label: any) => (
+                        <div
+                          key={label.id}
+                          className="px-3 py-1 rounded text-white text-sm font-medium"
+                          style={{ backgroundColor: label.color }}
+                        >
+                          {label.name || 'Label'}
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
+
+                {card.due_date && (
+                  <div>
+                    <h3 className="text-xs font-semibold text-trello-gray-600 mb-1">Due Date</h3>
+                    <div className="flex items-center gap-1 bg-gray-100 px-3 py-1 rounded">
+                      <input 
+                        type="checkbox" 
+                        title="Mark as complete" 
+                        className="w-4 h-4 rounded text-blue-500" 
+                      />
+                      <span className="text-sm text-gray-800">
+                        {format(new Date(card.due_date), 'MMM d, yyyy h:mm a')}
+                      </span>
+                    </div>
+                  </div>
+                )}
+              </div>
 
               {/* Description */}
               <div>
@@ -327,7 +378,7 @@ export default function CardModal({ cardId, onClose }: CardModalProps) {
                         <div className="flex items-center gap-2 mb-1">
                           <span className="font-semibold text-sm">{comment.full_name}</span>
                           <span className="text-xs text-trello-gray-600">
-                            {format(new Date(comment.created_at), 'MMM d \'at\' h:mm a')}
+                            {(comment.createdAt || comment.created_at) ? format(new Date((comment.createdAt || comment.created_at)), 'MMM d \'at\' h:mm a') : 'Just now'}
                           </span>
                         </div>
                         <div className="bg-white px-3 py-2 rounded text-sm text-trello-gray-900">
@@ -341,18 +392,61 @@ export default function CardModal({ cardId, onClose }: CardModalProps) {
             </div>
 
             {/* Sidebar */}
-            <div className="w-40 space-y-2">
+            <div className="w-40 space-y-2 relative">
               <h4 className="text-xs font-semibold text-trello-gray-600 uppercase mb-2">Add to card</h4>
               
-              <button className="w-full btn btn-secondary text-left flex items-center gap-2 text-sm">
-                <User className="w-4 h-4" />
-                Members
-              </button>
+              <div className="relative">
+                <button 
+                  onClick={() => { setShowMembers(!showMembers); setShowLabels(false); setShowDates(false); setShowAddChecklist(false); }}
+                  className="w-full btn btn-secondary text-left flex items-center gap-2 text-sm"
+                >
+                  <User className="w-4 h-4" />
+                  Members
+                </button>
+                {showMembers && (
+                  <div className="absolute top-10 left-0 w-64 bg-white rounded shadow-xl z-10 p-2 border">
+                    <h4 className="text-sm font-semibold mb-2 px-1 text-center text-gray-700">Members</h4>
+                    <button onClick={() => setShowMembers(false)} className="absolute top-2 right-2 text-gray-500 hover:text-gray-800"><X className="w-4 h-4" /></button>
+                    <div className="space-y-1">
+                      {currentBoard?.members?.map((member: any) => (
+                        <div key={member.id} className="flex items-center gap-2 p-1 hover:bg-gray-100 rounded cursor-pointer" onClick={() => handleToggleMember(member.id)}>
+                          <div className="w-6 h-6 rounded-full bg-blue-500 flex items-center justify-center text-white text-xs">
+                            {member.full_name?.charAt(0).toUpperCase()}
+                          </div>
+                          <span className="text-sm flex-1">{member.full_name}</span>
+                          {card.members?.some((m: any) => m.id === member.id) && <CheckSquare className="w-4 h-4 text-green-500" />}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
               
-              <button className="w-full btn btn-secondary text-left flex items-center gap-2 text-sm">
-                <Tag className="w-4 h-4" />
-                Labels
-              </button>
+              <div className="relative">
+                <button 
+                  onClick={() => { setShowLabels(!showLabels); setShowMembers(false); setShowDates(false); setShowAddChecklist(false); }}
+                  className="w-full btn btn-secondary text-left flex items-center gap-2 text-sm"
+                >
+                  <Tag className="w-4 h-4" />
+                  Labels
+                </button>
+                {showLabels && (
+                  <div className="absolute top-10 left-0 w-64 bg-white rounded shadow-xl z-10 p-2 border">
+                    <h4 className="text-sm font-semibold mb-2 px-1 text-center text-gray-700">Labels</h4>
+                    <button onClick={() => setShowLabels(false)} className="absolute top-2 right-2 text-gray-500 hover:text-gray-800"><X className="w-4 h-4" /></button>
+                    <div className="space-y-1">
+                      {currentBoard?.labels?.map((label: any) => (
+                        <div key={label.id} className="flex items-center gap-2 p-1 hover:bg-gray-100 rounded cursor-pointer" onClick={() => handleToggleLabel(label.id)}>
+                          <span className="w-full h-8 rounded px-2 flex justify-between items-center text-sm font-medium text-white" style={{ backgroundColor: label.color }}>
+                            {label.name}
+                            {card.labels?.some((l: any) => l.id === label.id) && <CheckSquare className="w-4 h-4 text-white" />}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
               
               {showAddChecklist ? (
                 <div className="space-y-2">
@@ -379,10 +473,38 @@ export default function CardModal({ cardId, onClose }: CardModalProps) {
                 </button>
               )}
               
-              <button className="w-full btn btn-secondary text-left flex items-center gap-2 text-sm">
-                <Calendar className="w-4 h-4" />
-                Dates
-              </button>
+              <div className="relative">
+                <button 
+                  onClick={() => { setShowDates(!showDates); setShowMembers(false); setShowLabels(false); setShowAddChecklist(false); }}
+                  className="w-full btn btn-secondary text-left flex items-center gap-2 text-sm"
+                >
+                  <Calendar className="w-4 h-4" />
+                  Dates
+                </button>
+                {showDates && (
+                  <div className="absolute top-10 left-0 w-64 bg-white rounded shadow-xl z-20 p-3 border">
+                    <h4 className="text-sm font-semibold mb-3 px-1 text-center text-gray-700">Due Date</h4>
+                    <button onClick={() => setShowDates(false)} className="absolute top-2 right-2 text-gray-500 hover:text-gray-800"><X className="w-4 h-4" /></button>
+                    <input 
+                      type="datetime-local" 
+                      className="w-full border rounded p-1 mb-2 text-sm font-sans"
+                      defaultValue={card.due_date ? new Date(card.due_date).toISOString().slice(0, 16) : ''}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        if (val) handleUpdateDate(new Date(val).toISOString());
+                      }}
+                    />
+                    {card.due_date && (
+                      <button 
+                        onClick={() => handleUpdateDate('')}
+                        className="w-full bg-gray-200 hover:bg-gray-300 text-gray-800 py-1 mt-1 rounded text-sm transition-colors"
+                      >
+                        Remove
+                      </button>
+                    )}
+                  </div>
+                )}
+              </div>
 
               <h4 className="text-xs font-semibold text-trello-gray-600 uppercase mb-2 mt-4">Actions</h4>
               

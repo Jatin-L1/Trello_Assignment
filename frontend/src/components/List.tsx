@@ -23,7 +23,15 @@ export default function List({ list }: ListProps) {
   const [listTitle, setListTitle] = useState(list.title);
   const [showMenu, setShowMenu] = useState(false);
   
-  const { createCard, updateList, deleteList } = useBoardStore();
+  const { createCard, updateList, deleteList, searchQuery, filterMembers, filterLabels, filterDueDate } = useBoardStore();
+
+  const filteredCards = list.cards.filter((c: any) => {
+    if (searchQuery && !c.title.toLowerCase().includes(searchQuery.toLowerCase())) return false;
+    if (filterMembers.length > 0 && !c.members?.some((m: any) => filterMembers.includes(m.id))) return false;
+    if (filterLabels.length > 0 && !c.labels?.some((l: any) => filterLabels.includes(l.id))) return false;
+    if (filterDueDate && !c.dueDate && !c.due_date) return false;
+    return true;
+  });
 
   const {
     attributes,
@@ -131,10 +139,10 @@ export default function List({ list }: ListProps) {
         {/* Cards */}
         <div className="flex-1 overflow-y-auto px-2 pb-2 space-y-2">
           <SortableContext
-            items={list.cards.map((c) => c.id)}
+            items={filteredCards.map((c) => c.id)}
             strategy={verticalListSortingStrategy}
           >
-            {list.cards.map((card) => (
+            {filteredCards.map((card) => (
               <Card key={card.id} card={card} listId={list.id} />
             ))}
           </SortableContext>
