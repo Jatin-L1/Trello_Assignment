@@ -1,8 +1,20 @@
 'use client';
 
 import { useState } from 'react';
-import { Star, Users, Filter } from 'lucide-react';
+import { Star, Users, Filter, Palette, Image as ImageIcon } from 'lucide-react';
 import { useBoardStore } from '@/store/boardStore';
+
+const BACKGROUND_COLORS = [
+  '#0079bf', '#d29034', '#519839', '#b04632', '#89609e',
+  '#cd5a91', '#4bbf6b', '#00aecc', '#838c91'
+];
+
+const BACKGROUND_IMAGES = [
+  'https://images.unsplash.com/photo-1620803517453-2943e8bb8ba1?auto=format&fit=crop&q=80&w=1920',
+  'https://images.unsplash.com/photo-1478760329108-5c3ed9d495a0?auto=format&fit=crop&q=80&w=1920',
+  'https://images.unsplash.com/photo-1506744626753-1fa44df318dc?auto=format&fit=crop&q=80&w=1920',
+  'https://images.unsplash.com/photo-1557683316-973673baf926?auto=format&fit=crop&q=80&w=1920'
+];
 
 interface BoardHeaderProps {
   board: {
@@ -17,6 +29,7 @@ export default function BoardHeader({ board }: BoardHeaderProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [title, setTitle] = useState(board.title);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [isBgPickerOpen, setIsBgPickerOpen] = useState(false);
   
   const { 
     updateBoard, 
@@ -73,7 +86,52 @@ export default function BoardHeader({ board }: BoardHeaderProps) {
 
       <div className="flex items-center gap-2 relative">
         <button 
-          onClick={() => setIsFilterOpen(!isFilterOpen)}
+          onClick={() => { setIsBgPickerOpen(!isBgPickerOpen); setIsFilterOpen(false); }}
+          className={`flex items-center gap-2 ${isBgPickerOpen ? 'bg-white/30' : 'bg-white/10 hover:bg-white/20'} text-white px-3 py-1.5 rounded transition-colors`}
+        >
+          <Palette className="w-4 h-4" />
+          <span className="text-sm font-medium">Background</span>
+        </button>
+
+        {isBgPickerOpen && (
+          <div className="absolute top-10 right-0 w-72 bg-white rounded shadow-xl z-50 text-trello-gray-900 p-3 flex flex-col gap-3">
+            <div>
+              <h3 className="text-xs font-semibold text-gray-600 mb-2 uppercase">Colors</h3>
+              <div className="grid grid-cols-5 gap-2">
+                {BACKGROUND_COLORS.map(color => (
+                  <div
+                    key={color}
+                    onClick={() => {
+                      updateBoard(board.id, { background_color: color, background_image: null });
+                      setIsBgPickerOpen(false);
+                    }}
+                    className="w-10 h-8 rounded cursor-pointer hover:opacity-80 transition-opacity"
+                    style={{ backgroundColor: color }}
+                  />
+                ))}
+              </div>
+            </div>
+            <div>
+              <h3 className="text-xs font-semibold text-gray-600 mb-2 uppercase">Photos</h3>
+              <div className="grid grid-cols-2 gap-2">
+                {BACKGROUND_IMAGES.map(img => (
+                  <div
+                    key={img}
+                    onClick={() => {
+                      updateBoard(board.id, { background_color: '#000000', background_image: img });
+                      setIsBgPickerOpen(false);
+                    }}
+                    className="h-16 rounded cursor-pointer bg-cover bg-center hover:opacity-80 transition-opacity"
+                    style={{ backgroundImage: `url(${img})` }}
+                  />
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        <button 
+          onClick={() => { setIsFilterOpen(!isFilterOpen); setIsBgPickerOpen(false); }}
           className={`flex items-center gap-2 ${isFilterOpen ? 'bg-white/30' : 'bg-white/10 hover:bg-white/20'} text-white px-3 py-1.5 rounded transition-colors`}
         >
           <Filter className="w-4 h-4" />

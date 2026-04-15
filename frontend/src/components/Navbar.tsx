@@ -45,7 +45,7 @@ export default function Navbar() {
         {/* Right Section */}
         <div className="flex items-center gap-2">
           {/* Search */}
-          <div className="relative">
+          <div className="relative hidden md:block">
             {isSearchOpen ? (
               <div className="flex items-center gap-2 relative">
                 <Search className="w-4 h-4 text-[#9fadbc] absolute left-2 pointer-events-none" />
@@ -71,6 +71,10 @@ export default function Navbar() {
               </button>
             )}
           </div>
+
+          <button className="md:hidden text-[#9fadbc] hover:bg-[#a6c5e229] w-[32px] h-[32px] flex items-center justify-center rounded-full transition-colors">
+            <Search className="w-[20px] h-[20px]" />
+          </button>
 
           {/* Notifications & Profile */}
           <div className="flex items-center gap-2">
