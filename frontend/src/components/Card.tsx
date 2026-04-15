@@ -3,9 +3,16 @@
 import { useState } from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { Calendar, CheckSquare, MessageSquare, Paperclip } from 'lucide-react';
+import { Calendar, CheckSquare, MessageSquare, Paperclip, MoreHorizontal, Check } from 'lucide-react';
 import { format } from 'date-fns';
 import CardModal from './CardModal';
+import { api } from '@/services/api';
+import { useBoardStore } from '@/store/boardStore';
+
+const COVER_COLORS = [
+  '#216E4E', '#7F5F01', '#A54800', '#AE2E24', '#5E4DB2',
+  '#0055CC', '#206A83', '#4C9B62', '#943D73', '#596773'
+];
 
 interface CardProps {
   card: {
@@ -26,6 +33,34 @@ interface CardProps {
 
 export default function Card({ card, listId, isDragging = false }: CardProps) {
   const [showModal, setShowModal] = useState(false);
+  const [showColorMenu, setShowColorMenu] = useState(false);
+  const { currentBoard, fetchBoard } = useBoardStore();
+
+  const handleUpdateColor = async (e: React.MouseEvent, colorHex: string) => {
+    e.stopPropagation();
+    try {
+      await api.updateCard(card.id, { cover_image: colorHex });
+      setShowColorMenu(false);
+      if (currentBoard) {
+        fetchBoard(currentBoard.id);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleRemoveColor = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    try {
+      await api.updateCard(card.id, { cover_image: null });
+      setShowColorMenu(false);
+      if (currentBoard) {
+        fetchBoard(currentBoard.id);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   const {
     attributes,
@@ -80,14 +115,56 @@ export default function Card({ card, listId, isDragging = false }: CardProps) {
         {...attributes}
         {...listeners}
         onClick={() => setShowModal(true)}
-        className={`bg-white rounded-lg shadow-card hover:shadow-card-hover transition-all cursor-pointer ${
+        className={`relative group bg-white rounded-lg shadow-card hover:shadow-card-hover transition-all cursor-pointer ${
           isSortableDragging ? 'opacity-50' : ''
         }`}
       >
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            setShowColorMenu(!showColorMenu);
+          }}
+          className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 p-1.5 bg-white/90 hover:bg-trello-gray-200 text-trello-gray-700 rounded transition-opacity z-10"
+        >
+          <MoreHorizontal className="w-4 h-4" />
+        </button>
+
+        {showColorMenu && (
+          <div 
+            className="absolute top-8 right-1 w-64 bg-white rounded-lg shadow-xl z-50 p-3 border"
+            onClick={(e) => e.stopPropagation()}
+            onPointerDown={(e) => e.stopPropagation()}
+          >
+            <h4 className="text-xs font-semibold text-trello-gray-600 uppercase mb-3 text-center">Colors</h4>
+            <div className="grid grid-cols-5 gap-2 mb-3">
+              {COVER_COLORS.map(color => (
+                <div
+                  key={color}
+                  onClick={(e) => handleUpdateColor(e, color)}
+                  className="h-8 rounded cursor-pointer hover:opacity-80 transition-opacity flex items-center justify-center"
+                  style={{ backgroundColor: color }}
+                >
+                  {card.coverImage === color && <Check className="w-4 h-4 text-white" />}
+                </div>
+              ))}
+            </div>
+            <button
+              onClick={handleRemoveColor}
+              className="w-full py-1.5 text-xs font-semibold text-gray-700 bg-gray-100 hover:bg-gray-200 rounded transition-colors"
+            >
+              Remove color
+            </button>
+          </div>
+        )}
+
         {card.coverImage && (
           <div
-            className="h-32 bg-cover bg-center rounded-t-lg"
-            style={{ backgroundImage: `url(${card.coverImage})` }}
+            className="h-8 bg-cover bg-center rounded-t-lg"
+            style={
+              card.coverImage.startsWith('#') 
+                ? { backgroundColor: card.coverImage }
+                : { backgroundImage: `url(${card.coverImage})`, height: '8rem' }
+            }
           />
         )}
         

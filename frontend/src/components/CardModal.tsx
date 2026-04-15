@@ -170,7 +170,14 @@ export default function CardModal({ cardId, onClose }: CardModalProps) {
         
         {/* Cover Image */}
         {card.coverImage && (
-          <div className="h-40 bg-cover bg-center relative group" style={{ backgroundImage: `url(${card.coverImage})` }}>
+          <div 
+            className="h-40 relative group" 
+            style={
+              card.coverImage.startsWith('#')
+                ? { backgroundColor: card.coverImage }
+                : { backgroundImage: `url(${card.coverImage})`, backgroundSize: 'cover', backgroundPosition: 'center' }
+            }
+          >
             <button 
               onClick={() => handleSetCover("")}
               className="absolute bottom-3 right-3 bg-black/50 hover:bg-black/70 text-white px-3 py-1.5 text-sm rounded shadow-sm opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1"
