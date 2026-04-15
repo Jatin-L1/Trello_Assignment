@@ -217,3 +217,11 @@ Built as a demonstration of full-stack engineering capabilities.
 ---
 
 **Note**: This is a portfolio project demonstrating production-grade development practices.
+
+
+## ?? Assumptions Made
+
+- **Authentication**: As per the instructions, no authentication system was implemented. The application assumes a default logged-in user experience. Sample members were seeded into the database, and any action simulating user interaction operates under a global implicit auth state.
+- **Media Storage**: Cloudinary is used to securely store and deliver card image attachments/covers rather than storing them locally.
+- **Real-time Sync**: The frontend heavily uses Zustand for optimistic UI updates for instant drag-and-drop feedback, relying on fast REST API endpoints in the background rather than WebSockets.
+
