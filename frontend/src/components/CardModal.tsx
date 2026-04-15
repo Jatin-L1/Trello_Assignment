@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { X, CreditCard, AlignLeft, CheckSquare, Calendar, Tag, User, Trash2 } from 'lucide-react';
+import { X, CreditCard, AlignLeft, CheckSquare, Calendar, Tag, User, Trash2, Image, Paperclip } from 'lucide-react';
 import { api } from '@/services/api';
 import { useBoardStore } from '@/store/boardStore';
 import { format } from 'date-fns';
@@ -130,6 +130,28 @@ export default function CardModal({ cardId, onClose }: CardModalProps) {
     loadCard();
   };
 
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files || !e.target.files[0]) return;
+    const file = e.target.files[0];
+    try {
+      await api.uploadAttachment(cardId, file);
+      const res = await api.getCard(cardId);
+      setCard(res.data);
+    } catch (error) {
+      console.error('Failed to upload file:', error);
+    }
+  };
+
+  const handleSetCover = async (imageUrl: string) => {
+    try {
+      await api.updateCard(cardId, { coverImage: imageUrl });
+      const res = await api.getCard(cardId);
+      setCard(res.data);
+    } catch (error) {
+      console.error('Failed to update cover:', error);
+    }
+  };
+
   if (loading) {
     return (
       <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
@@ -141,17 +163,29 @@ export default function CardModal({ cardId, onClose }: CardModalProps) {
   if (!card) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-start justify-center z-50 overflow-y-auto p-4">
-      <div className="bg-trello-gray-50 rounded-lg shadow-modal w-full max-w-3xl my-8">
+    <div className="fixed inset-0 bg-black/50 flex items-start justify-center z-50 overflow-y-auto p-4 transition-opacity">
+      <div className="bg-trello-gray-50 rounded-lg shadow-modal w-full max-w-3xl my-8 relative overflow-hidden flex flex-col">
+        
         {/* Cover Image */}
-        {card.cover_image && (
-          <div
-            className="h-32 bg-cover bg-center rounded-t-lg"
-            style={{ backgroundImage: `url(${card.cover_image})` }}
-          />
+        {card.coverImage && (
+          <div className="h-40 bg-cover bg-center relative group" style={{ backgroundImage: `url(${card.coverImage})` }}>
+            <button 
+              onClick={() => handleSetCover("")}
+              className="absolute bottom-3 right-3 bg-black/50 hover:bg-black/70 text-white px-3 py-1.5 text-sm rounded shadow-sm opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1"
+            >
+              <X className="w-4 h-4"/> Remove cover
+            </button>
+          </div>
         )}
+        
+        <div className="p-6 relative">
+          <button
+            onClick={onClose}
+            className={`absolute top-4 right-4 p-2 rounded-full transition-colors z-20 ${card.coverImage ? 'hover:bg-trello-gray-200 text-trello-gray-600' : 'text-trello-gray-600 hover:bg-trello-gray-200 bg-transparent'}`}
+          >
+            <X className="w-5 h-5" />
+          </button>
 
-        <div className="p-6">
           {/* Header */}
           <div className="flex items-start gap-3 mb-6">
             <CreditCard className="w-6 h-6 text-trello-gray-700 mt-1" />
@@ -341,6 +375,37 @@ export default function CardModal({ cardId, onClose }: CardModalProps) {
                 </div>
               )}
 
+              {/* Attachments Section */}
+              {card.attachments && card.attachments.length > 0 && (
+                <div className="mb-8">
+                  <div className="flex items-center gap-3 mb-4">
+                    <Paperclip className="w-5 h-5 text-trello-gray-700" />
+                    <h3 className="text-sm font-semibold text-trello-gray-900">Attachments</h3>
+                  </div>
+                  <div className="space-y-3">
+                    {card.attachments.map((file: any) => (
+                       <div key={file.id} className="flex gap-4 items-start hover:bg-trello-gray-100 p-2 rounded-lg group transition-colors cursor-pointer" onClick={() => window.open(file.fileUrl, '_blank')}>
+                        {(file.fileUrl.endsWith('.jpg') || file.fileUrl.endsWith('.png') || file.fileUrl.endsWith('.jpeg')) ? (
+                           <div className="w-28 h-20 bg-cover bg-center rounded border border-gray-200 cursor-pointer" style={{ backgroundImage: `url(${file.fileUrl})` }} />
+                        ) : file.fileUrl.endsWith('.mp4') ? (
+                           <video className="w-28 h-20 rounded border border-gray-200 cursor-pointer object-cover" src={file.fileUrl} />
+                        ) : (
+                           <div className="w-28 h-20 flex bg-gray-200 items-center justify-center rounded font-bold text-gray-500 cursor-pointer border border-gray-300">DOC</div>
+                        )}
+                        <div className="flex flex-col py-1 pointer-events-none">
+                          <span className="font-semibold text-sm text-trello-gray-900 break-all w-[300px]">{file.filename || 'Attachment'}</span>
+                          <span className="text-xs text-trello-gray-600 mt-1">Added {format(new Date(file.createdAt), 'MMM d, yyyy')}</span>
+                          <div className="flex gap-2 mt-2 pointer-events-auto">
+                            <span className="text-sm text-trello-gray-600 hover:text-black underline cursor-pointer">View</span>
+                            <span onClick={(e) => { e.stopPropagation(); handleSetCover(file.fileUrl); }} className="text-sm text-trello-gray-600 hover:text-black underline ml-2 cursor-pointer">Make cover</span>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               {/* Comments */}
               <div>
                 <div className="flex items-center gap-2 mb-3">
@@ -508,9 +573,20 @@ export default function CardModal({ cardId, onClose }: CardModalProps) {
 
               <h4 className="text-xs font-semibold text-trello-gray-600 uppercase mb-2 mt-4">Actions</h4>
               
+              <label className="w-full btn btn-secondary text-left flex items-center gap-2 text-sm hover:bg-trello-gray-200 cursor-pointer">
+                <Paperclip className="w-4 h-4" />
+                Attachment
+                <input
+                  type="file"
+                  className="hidden"
+                  onChange={handleFileUpload}
+                  accept="image/*,video/*,.pdf,.doc,.docx"
+                />
+              </label>
+
               <button
                 onClick={handleDeleteCard}
-                className="w-full btn btn-secondary text-left flex items-center gap-2 text-sm text-red-600 hover:bg-red-50"
+                className="w-full mt-2 btn btn-secondary text-left flex items-center gap-2 text-sm text-red-600 hover:bg-red-50"
               >
                 <Trash2 className="w-4 h-4" />
                 Delete
