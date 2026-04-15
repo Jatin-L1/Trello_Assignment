@@ -13,7 +13,7 @@ interface CardProps {
     title: string;
     description?: string;
     due_date?: string;
-    cover_image?: string;
+    coverImage?: string;
     labels?: any[];
     members?: any[];
     checklists?: any[];
@@ -84,10 +84,10 @@ export default function Card({ card, listId, isDragging = false }: CardProps) {
           isSortableDragging ? 'opacity-50' : ''
         }`}
       >
-        {card.cover_image && (
+        {card.coverImage && (
           <div
             className="h-32 bg-cover bg-center rounded-t-lg"
-            style={{ backgroundImage: `url(${card.cover_image})` }}
+            style={{ backgroundImage: `url(${card.coverImage})` }}
           />
         )}
         

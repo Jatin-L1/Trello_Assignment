@@ -61,6 +61,21 @@ class ApiService {
     });
   }
 
+  async uploadBoardBackground(id: string, file: File) {
+    const formData = new FormData();
+    formData.append('file', file);
+    
+    const response = await fetch(`${this.baseUrl}/api/boards/${id}/background`, {
+      method: 'POST',
+      body: formData,
+    });
+    
+    if (!response.ok) {
+      throw new Error('Failed to upload background');
+    }
+    return response.json();
+  }
+
   // Lists
   async createList(data: any) {
     return this.request('/api/lists', {

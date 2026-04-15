@@ -32,12 +32,21 @@ export default function BoardHeader({ board }: BoardHeaderProps) {
   const [isBgPickerOpen, setIsBgPickerOpen] = useState(false);
   
   const { 
-    updateBoard, 
+    updateBoard,
+    uploadBoardBackground,
     filterMembers, setFilterMembers, 
     filterLabels, setFilterLabels, 
     filterDueDate, setFilterDueDate,
     currentBoard
   } = useBoardStore();
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setIsBgPickerOpen(false);
+      await uploadBoardBackground(board.id, file);
+    }
+  };
 
   const handleSave = async () => {
     if (title.trim() && title !== board.title) {
@@ -113,7 +122,7 @@ export default function BoardHeader({ board }: BoardHeaderProps) {
             </div>
             <div>
               <h3 className="text-xs font-semibold text-gray-600 mb-2 uppercase">Photos</h3>
-              <div className="grid grid-cols-2 gap-2">
+              <div className="grid grid-cols-2 gap-2 mb-2">
                 {BACKGROUND_IMAGES.map(img => (
                   <div
                     key={img}
@@ -126,6 +135,16 @@ export default function BoardHeader({ board }: BoardHeaderProps) {
                   />
                 ))}
               </div>
+              <label className="flex items-center justify-center gap-2 w-full mt-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium py-2 rounded cursor-pointer transition-colors">
+                <ImageIcon className="w-4 h-4" />
+                Upload Photo
+                <input 
+                  type="file" 
+                  accept="image/jpeg,image/png,image/gif,image/webp" 
+                  className="hidden" 
+                  onChange={handleFileUpload}
+                />
+              </label>
             </div>
           </div>
         )}

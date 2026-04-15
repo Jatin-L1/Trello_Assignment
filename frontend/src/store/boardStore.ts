@@ -68,6 +68,7 @@ interface BoardStore {
   fetchBoard: (id: string) => Promise<void>;
   createBoard: (data: any) => Promise<any>;
   updateBoard: (id: string, data: any) => Promise<void>;
+  uploadBoardBackground: (id: string, file: File) => Promise<void>;
   deleteBoard: (id: string) => Promise<void>;
   
   // Lists
@@ -138,6 +139,18 @@ export const useBoardStore = create<BoardStore>((set, get) => ({
       set((state) => ({
         currentBoard: state.currentBoard?.id === id ? { ...state.currentBoard, ...response.data } : state.currentBoard,
         boards: state.boards.map((b) => (b.id === id ? { ...b, ...response.data } : b)),
+      }));
+    } catch (error: any) {
+      set({ error: error.message });
+    }
+  },
+
+  uploadBoardBackground: async (id: string, file: File) => {
+    try {
+      const response = await api.uploadBoardBackground(id, file);
+      set((state) => ({
+        currentBoard: state.currentBoard?.id === id ? { ...state.currentBoard, ...response.data.board } : state.currentBoard,
+        boards: state.boards.map((b) => (b.id === id ? { ...b, ...response.data.board } : b)),
       }));
     } catch (error: any) {
       set({ error: error.message });

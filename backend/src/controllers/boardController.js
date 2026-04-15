@@ -178,3 +178,38 @@ exports.deleteBoard = async (req, res, next) => {
     next(error);
   }
 };
+
+// Upload custom background
+exports.uploadBackground = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    if (!req.file) {
+      return res.status(400).json({ success: false, error: 'No file provided' });
+    }
+
+    const imageUrl = req.file.path;
+
+    const board = await prisma.board.update({
+      where: { id },
+      data: {
+        backgroundImage: imageUrl,
+        backgroundColor: '#000000',
+      },
+    });
+
+    res.status(200).json({
+      success: true,
+      data: {
+        imageUrl,
+        board
+      }
+    });
+
+  } catch (error) {
+    if (error.code === 'P2025') {
+      return res.status(404).json({ success: false, error: 'Board not found' });
+    }
+    next(error);
+  }
+};

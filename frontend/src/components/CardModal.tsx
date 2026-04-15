@@ -146,7 +146,7 @@ export default function CardModal({ cardId, onClose }: CardModalProps) {
 
   const handleSetCover = async (imageUrl: string) => {
     try {
-      await api.updateCard(cardId, { coverImage: imageUrl });
+      await api.updateCard(cardId, { cover_image: imageUrl });
       const res = await api.getCard(cardId);
       setCard(res.data);
     } catch (error) {
