@@ -327,3 +327,27 @@ exports.searchCards = async (req, res, next) => {
     next(error);
   }
 };
+exports.uploadAttachment = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const file = req.file;
+
+    if (!file) {
+      return res.status(400).json({ success: false, error: 'No file uploaded' });
+    }
+
+    const attachment = await prisma.attachment.create({
+      data: {
+        cardId: id,
+        filename: file.originalname,
+        fileUrl: file.path,
+        mimeType: file.mimetype,
+        fileSize: file.size || 0,
+      },
+    });
+
+    res.json({ success: true, data: attachment });
+  } catch (error) {
+    next(error);
+  }
+};

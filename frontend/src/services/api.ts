@@ -121,6 +121,22 @@ class ApiService {
     });
   }
 
+  async uploadAttachment(cardId: string, file: File) {
+    const formData = new FormData();
+    formData.append('file', file);
+    
+    // We bypass this.request here because FormData needs browser-native content-type boundaries
+    const response = await fetch(`${this.baseUrl}/api/cards/${cardId}/attachments`, {
+      method: 'POST',
+      body: formData,
+    });
+    
+    if (!response.ok) {
+      throw new Error('Failed to upload file');
+    }
+    return response.json();
+  }
+
   async searchCards(params: any) {
     const query = new URLSearchParams(params).toString();
     return this.request(`/api/cards/search?${query}`);
