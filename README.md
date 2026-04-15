@@ -1,101 +1,119 @@
-# 📋 Trello Clone - Project Management Tool
+<div align="center">
+  <img src="https://logowik.com/content/uploads/images/trello-blue-icon9944.logowik.com.webp" width="100" alt="Trello Logo"/>
+  <h1>Trello Clone - Project Management Tool</h1>
+  <p><strong>SDE Intern Fullstack Assignment</strong></p>
+
+  <p>
+    <a href="https://trello-04.vercel.app/"><strong>Live Demo</strong></a> · 
+    <a href="https://trello-assignment-vwgh.onrender.com/"><strong>API Endpoint</strong></a>
+  </p>
+
+  <p>
+    <img src="https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=next.js&logoColor=white" alt="Next.js" />
+    <img src="https://img.shields.io/badge/React-20232a?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React" />
+    <img src="https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white" alt="TailwindCSS" />
+    <img src="https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white" alt="NodeJS" />
+    <img src="https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white" alt="PostgreSQL" />
+    <img src="https://img.shields.io/badge/Prisma-3982CE?style=for-the-badge&logo=Prisma&logoColor=white" alt="Prisma" />
+  </p>
+</div>
 
 ![Trello Frontend Overview](preview.png)
 
-> **SDE Intern Fullstack Assignment**
-
-A full-stack Kanban-style project management web application that closely replicates Trello's design and user experience. 
-
-🔗 **Live Demo:** [Frontend on Vercel](https://trello-04.vercel.app/)
-🔗 **API Endpoint:** [Backend API on Render](https://trello-assignment-vwgh.onrender.com/)
+A full-stack, highly interactive Kanban-style project management web application built from the ground up to closely replicate the core design, animations, and functionality of Trello. It features buttery smooth drag-and-drop lists/cards, nested checklists, labels, and beautiful dark-mode specific styling!
 
 ---
 
-## ✨ Features Implemented
+## ✨ Key Features
 
-### 📌 Core Features (100% Completed)
-- **Board Management:** Create, view, and manage multiple boards.
-- **Lists Management:** Create, edit, delete, and drag-and-drop to reorder lists smoothly.
-- **Cards Management:** Create, edit (title/description), delete/archive, and flawlessly drag-and-drop cards between or within lists.
-- **Card Details (Modal):**
-  - 🏷️ **Labels:** Add/remove colored tags.
-  - 📅 **Due Dates:** Set deadlines with visual "Overdue" or "Due Soon" badge indicators.
-  - ✅ **Checklists:** Create nested tasks and track progress dynamically with completion bars.
-  - 👥 **Members:** Assign users to specific tasks.
-- **Search & Filter:** Global search by card title, and robust filtering by labels, assigned members, or due dates.
+### 📋 Boards & Lists Management
+- **Workspaces:** Create, view, and manage multiple boards effortlessly.
+- **Lists Operations:** Generate, edit titles seamlessly, delete, and **drag-and-drop** to reorder list columns on the fly.
 
-### 🌟 Bonus / Good-to-Have Features
-- **Responsive Design:** Adapts smoothly across mobile, tablet, and desktop views.
-- **Multiple Boards Support:** Seamlessly navigate between different projects.
-- **File Attachments & Comments:** Upload files (via Cloudinary) and leave comments on cards.
-- **Card Covers & Customization:** Attach URLs or solid background colors to highlight cards.
-- **Board & List Background Customization:** Customize the workspace vibe globally and at the list-column level.
+### 🃏 Cards & Task Tracking
+- **Interactive Cards:** Create, edit descriptions, archive/delete, and flawlessly **drag-and-drop** cards between lists or within the identical list.
+- **Card Modals (Detailed View):**
+  - 🏷️ **Labels:** Assign custom colored labels.
+  - 📅 **Due Dates:** Set strict deadlines with visual "Overdue" (red) or "Due Soon" (yellow) badge indicators.
+  - ✅ **Checklists:** Create nested task lists and track progress dynamically with granular completion bars.
+  - 👥 **Member Assignments:** Assign global project members directly to specific tasks.
 
----
-
-## 🚀 Tech Stack
-
-- **Frontend:** Next.js 14, React, Tailwind CSS, Zustand (State Management), `@dnd-kit` (Drag & Drop).
-- **Backend:** Node.js, Express.js.
-- **Database:** PostgreSQL (via Supabase), Prisma ORM.
-- **Media Storage:** Cloudinary & Multer (for image/attachment uploads).
+### 🖼️ Customization & Attachments
+- **Image Attachments:** Upload media files (handled securely via Cloudinary) straight onto individual cards.
+- **Cosmetic Covers:** Select solid background colors to highlight and separate designated cards visually.
+- **Board Backgrounds:** Personalize the workspace vibe globally using beautiful Unsplash imagery or solid theme colors!
 
 ---
 
-## 🛠️ Local Setup & Installation
+## 🛠️ Technologies Used
+
+| Stack     | Technologies Used                                                                                       |
+| :-------- | :------------------------------------------------------------------------------------------------------ |
+| **Frontend** | Next.js 14, React, Tailwind CSS, Zustand (State Management), `@dnd-kit/core` & `@dnd-kit/sortable` |
+| **Backend**  | Node.js, Express.js                                                                                     |
+| **Database** | PostgreSQL (hosted via Supabase), Prisma ORM                                                            |
+| **Storage**  | Cloudinary & Multer (for robust image/attachment uploads)                                               |
+
+---
+
+## 💻 Local Setup & Installation
+
+Follow these quick steps to get your development environment running!
 
 ### Prerequisites
-- Node.js (v18+)
-- PostgreSQL / Supabase connection string
+- [Node.js](https://nodejs.org/) (v18+)
+- Postgres connection string (e.g., from [Supabase](https://supabase.com/))
+- [Cloudinary](https://cloudinary.com/) Account (Free tier API keys)
 
-### 1. Backend Setup
+### 1️⃣ Backend Configuration
+
+Navigate into the backend project folder:
 ```bash
 cd backend
 npm install
 ```
-Create a `.env` file in the `backend` directory:
+
+Create a `.env` file in your `/backend` directory:
 ```env
 PORT=5000
-DATABASE_URL=your_database_connection_string
-CLOUDINARY_CLOUD_NAME=your_cloudinary_name
-CLOUDINARY_API_KEY=your_api_key
-CLOUDINARY_API_SECRET=your_api_secret
+DATABASE_URL="your_db_connection_string"
+CLOUDINARY_CLOUD_NAME="your_cloudinary_name"
+CLOUDINARY_API_KEY="your_api_key"
+CLOUDINARY_API_SECRET="your_api_secret"
 ```
-Run migrations and start the server:
+
+Initialize your database schema and spin up the server:
 ```bash
 npx prisma db push
 npm run dev
 ```
 
-### 2. Frontend Setup
+### 2️⃣ Frontend Configuration
+
+Open a new terminal window and navigate to the frontend:
 ```bash
 cd frontend
 npm install
 ```
-Create a `.env.local` file in the `frontend` directory:
+
+Create a `.env.local` file in your `/frontend` directory:
 ```env
-NEXT_PUBLIC_API_URL=http://localhost:5000/api
+NEXT_PUBLIC_API_URL="http://localhost:5000/api"
 ```
-Start the development server:
+
+Fire up the frontend client:
 ```bash
 npm run dev
 ```
-Open `http://localhost:3000` in your browser to use the app.
+🎉 **All done!** Open `http://localhost:3000` in your browser.
 
 ---
 
-## 🗄️ Database Design
-The application utilizes a relational database structure designed with Prisma ORM:
-- **Board:** Has many Lists and Members.
-- **List:** Has many Cards. Reordered via positional indexing.
-- **Card:** The central entity. Has many Comments, Attachments, Checklists, and Many-to-Many relations with Labels and Members. 
-- **Checklists & Items:** Nested relationships for granular task tracking.
+## 📝 Design Decisions & Assumptions
 
----
+Based on typical application requirements and grading rubrics, here are the core architectural assumptions explicitly made during development:
 
-## 💡 Assumptions Made (Assignment Rubric)
-
-- **Authentication:** As per the assignment instructions, no formal login/authentication system was implemented. The application operates under an assumed default user state to allow seamless testing of features.
-- **Sample Data / Members:** Sample members and data have been seeded directly into the database to support the assignment/filtering functionality.
-- **Media Storage:** Cloudinary is used to securely store and deliver card image attachments and covers rather than saving files locally. 
-- **Optimistic UI:** The frontend leverages Zustand to optimistically update the UI constraints during drag-and-drop interactions before the backend responds, ensuring a buttery-smooth Trello-like experience.
+- 🛡️ **Authentication Scope:** No formal login mapping or JWT system was implemented per standard fullstack assignment constraint boundaries. The app tests seamlessly under an assumed default user state to bypass sign-up flow friction for reviewers.
+- 🧑‍🤝‍🧑 **Pre-Seeded Data:** Sample members and baseline configurations have been pre-seeded into the Postgres database. This makes testing member assignments, filtering boundaries, and avatar mapping immediately actionable upon boot-up.
+- ☁️ **Media Architecture:** Instead of local file storage (which fails on modern ephemeral hosts like Render/Vercel without persistent disks), **Cloudinary** handles all attachment blobs and delivers assets flawlessly via CDNs.
+- ⚡ **Optimistic UI Constraints:** To achieve Trello's signature "snappy" drag-and-drop feel, the frontend utilizes "optimistic updates" heavily via Zustand. Moving a card flips the local state arrays instantly before the backend physically confirms the change over the HTTP bridge.
