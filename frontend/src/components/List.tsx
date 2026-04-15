@@ -98,7 +98,7 @@ export default function List({ list }: ListProps) {
       className="w-72 flex-shrink-0 flex flex-col max-h-full"
     >
       <div 
-        className={`rounded-lg flex flex-col max-h-full shadow-sm overflow-hidden ${list.color ? '' : 'bg-trello-gray-100'}`}
+        className={`rounded-lg flex flex-col max-h-full shadow-sm ${list.color ? '' : 'bg-trello-gray-100'}`}
         style={list.color ? { backgroundColor: list.color } : {}}
       >
         
@@ -147,7 +147,7 @@ export default function List({ list }: ListProps) {
                   className="fixed inset-0 z-10"
                   onClick={() => setShowMenu(false)}
                 />
-                <div className="absolute right-0 top-8 w-64 bg-white rounded-lg shadow-modal z-20 py-2 border relative">
+                <div className="absolute right-0 top-10 w-64 bg-white rounded-lg shadow-modal z-[100] py-2 border">
                   
                   <div className="px-3 pb-3 border-b">
                     <h4 className="text-xs font-semibold text-trello-gray-600 uppercase mb-3 text-center">List Color</h4>

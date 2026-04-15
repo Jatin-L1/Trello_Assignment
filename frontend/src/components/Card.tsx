@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { Calendar, CheckSquare, MessageSquare, Paperclip, MoreHorizontal, Check } from 'lucide-react';
+import { Calendar, CheckSquare, MessageSquare, Paperclip, MoreHorizontal, Check, X } from 'lucide-react';
 import { format } from 'date-fns';
 import CardModal from './CardModal';
 import { api } from '@/services/api';
@@ -130,30 +130,40 @@ export default function Card({ card, listId, isDragging = false }: CardProps) {
         </button>
 
         {showColorMenu && (
-          <div 
-            className="absolute top-8 right-1 w-64 bg-white rounded-lg shadow-xl z-50 p-3 border"
-            onClick={(e) => e.stopPropagation()}
-            onPointerDown={(e) => e.stopPropagation()}
-          >
-            <h4 className="text-xs font-semibold text-trello-gray-600 uppercase mb-3 text-center">Colors</h4>
-            <div className="grid grid-cols-5 gap-2 mb-3">
-              {COVER_COLORS.map(color => (
-                <div
-                  key={color}
-                  onClick={(e) => handleUpdateColor(e, color)}
-                  className="h-8 rounded cursor-pointer hover:opacity-80 transition-opacity flex items-center justify-center"
-                  style={{ backgroundColor: color }}
-                >
-                  {card.coverImage === color && <Check className="w-4 h-4 text-white" />}
-                </div>
-              ))}
-            </div>
-            <button
-              onClick={handleRemoveColor}
-              className="w-full py-1.5 text-xs font-semibold text-gray-700 bg-gray-100 hover:bg-gray-200 rounded transition-colors"
+          <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/20">
+            <div 
+              className="w-64 bg-white rounded-lg shadow-xl p-3 border relative"
+              onClick={(e) => e.stopPropagation()}
+              onPointerDown={(e) => e.stopPropagation()}
             >
-              Remove color
-            </button>
+              <div className="flex justify-between items-center mb-3">
+                <h4 className="text-xs font-semibold text-trello-gray-600 uppercase">Colors</h4>
+                <button 
+                  onClick={(e) => { e.stopPropagation(); setShowColorMenu(false); }}
+                  className="text-gray-500 hover:text-gray-700"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+              <div className="grid grid-cols-5 gap-2 mb-3">
+                {COVER_COLORS.map(color => (
+                  <div
+                    key={color}
+                    onClick={(e) => handleUpdateColor(e, color)}
+                    className="h-8 rounded cursor-pointer hover:opacity-80 transition-opacity flex items-center justify-center"
+                    style={{ backgroundColor: color }}
+                  >
+                    {card.coverImage === color && <Check className="w-4 h-4 text-white" />}
+                  </div>
+                ))}
+              </div>
+              <button
+                onClick={handleRemoveColor}
+                className="w-full py-1.5 text-xs font-semibold text-gray-700 bg-gray-100 hover:bg-gray-200 rounded transition-colors"
+              >
+                Remove color
+              </button>
+            </div>
           </div>
         )}
 
