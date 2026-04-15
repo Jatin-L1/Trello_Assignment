@@ -1,227 +1,99 @@
-# Trello Clone - Full-Stack Kanban Project Management Tool
+# 📋 Trello Clone - Project Management Tool
 
-A production-grade Trello clone built with modern technologies, featuring drag-and-drop functionality, real-time updates, and a pixel-perfect UI.
+> **SDE Intern Fullstack Assignment**
 
-## 🚀 Tech Stack
+A full-stack Kanban-style project management web application that closely replicates Trello's design and user experience. 
 
-### Frontend
-- **Next.js 14** (App Router)
-- **Tailwind CSS** (Styling)
-- **@dnd-kit** (Drag & Drop)
-- **Zustand** (State Management)
-- **React Hook Form** (Form Handling)
-
-### Backend
-- **Node.js + Express.js**
-- **PostgreSQL** (via Supabase)
-- **CORS** enabled
-
-### Deployment
-- Frontend: Vercel
-- Backend: Render
-- Database: Supabase
-
-## ✨ Features
-
-### Core Features
-- ✅ Create and manage multiple boards
-- ✅ Create, edit, delete lists
-- ✅ Create, edit, delete cards
-- ✅ Drag & drop cards between lists
-- ✅ Reorder cards within lists
-- ✅ Reorder lists on board
-- ✅ Card details modal with:
-  - Labels (colored tags)
-  - Due dates
-  - Checklists with toggle items
-  - Member assignments
-  - Description editing
-- ✅ Search cards by title
-- ✅ Filter by labels, members, due date
-
-### Bonus Features
-- ✅ Multiple boards support
-- ✅ Fully responsive (mobile, tablet, desktop)
-- ✅ Board background customization
-- ✅ Card cover images
-- ✅ Activity log
-- ✅ Comments system
-- ✅ File attachments
-
-## 📁 Project Structure
-
-```
-trello-clone/
-├── backend/
-│   ├── src/
-│   │   ├── config/
-│   │   ├── routes/
-│   │   ├── controllers/
-│   │   ├── middleware/
-│   │   └── server.js
-│   ├── database/
-│   │   ├── schema.sql
-│   │   └── seed.sql
-│   └── package.json
-├── frontend/
-│   ├── src/
-│   │   ├── app/
-│   │   ├── components/
-│   │   ├── hooks/
-│   │   ├── services/
-│   │   ├── store/
-│   │   └── lib/
-│   └── package.json
-└── README.md
-```
-
-## 🛠️ Setup Instructions
-
-### Prerequisites
-- Node.js 18+
-- PostgreSQL (or Supabase account)
-- npm or yarn
-
-### Backend Setup
-
-1. Navigate to backend directory:
-```bash
-cd backend
-```
-
-2. Install dependencies:
-```bash
-npm install
-```
-
-3. Create `.env` file:
-```env
-PORT=5000
-DATABASE_URL=your_supabase_connection_string
-```
-
-4. Run database migrations:
-```bash
-psql -h your_host -U your_user -d your_db -f database/schema.sql
-psql -h your_host -U your_user -d your_db -f database/seed.sql
-```
-
-5. Start server:
-```bash
-npm run dev
-```
-
-### Frontend Setup
-
-1. Navigate to frontend directory:
-```bash
-cd frontend
-```
-
-2. Install dependencies:
-```bash
-npm install
-```
-
-3. Create `.env.local` file:
-```env
-NEXT_PUBLIC_API_URL=http://localhost:5000
-```
-
-4. Start development server:
-```bash
-npm run dev
-```
-
-5. Open [http://localhost:3000](http://localhost:3000)
-
-## 🚀 Deployment
-
-### Deploy Backend to Render
-
-1. Create new Web Service on Render
-2. Connect your repository
-3. Set build command: `cd backend && npm install`
-4. Set start command: `cd backend && npm start`
-5. Add environment variables
-
-### Deploy Frontend to Vercel
-
-1. Install Vercel CLI: `npm i -g vercel`
-2. Navigate to frontend: `cd frontend`
-3. Deploy: `vercel`
-4. Set environment variables in Vercel dashboard
-
-### Setup Supabase
-
-1. Create project at [supabase.com](https://supabase.com)
-2. Run SQL from `database/schema.sql` in SQL Editor
-3. Run SQL from `database/seed.sql` for sample data
-4. Copy connection string to backend `.env`
-
-## 🎨 UI/UX Highlights
-
-- Pixel-perfect Trello UI replication
-- Smooth drag-and-drop animations
-- Hover effects and transitions
-- Responsive design for all devices
-- Loading states and error handling
-- Optimistic UI updates
-
-## 📝 API Endpoints
-
-### Boards
-- `GET /api/boards` - Get all boards
-- `POST /api/boards` - Create board
-- `GET /api/boards/:id` - Get board details
-- `PUT /api/boards/:id` - Update board
-- `DELETE /api/boards/:id` - Delete board
-
-### Lists
-- `POST /api/lists` - Create list
-- `PUT /api/lists/:id` - Update list
-- `DELETE /api/lists/:id` - Delete list
-- `PUT /api/lists/:id/position` - Update list position
-
-### Cards
-- `POST /api/cards` - Create card
-- `GET /api/cards/:id` - Get card details
-- `PUT /api/cards/:id` - Update card
-- `DELETE /api/cards/:id` - Delete card
-- `PUT /api/cards/:id/position` - Update card position
-
-### Labels, Members, Checklists
-- Full CRUD operations for all entities
-- See API documentation for complete list
-
-## 🧪 Testing
-
-```bash
-# Frontend
-cd frontend
-npm run test
-
-# Backend
-cd backend
-npm run test
-```
-
-## 📄 License
-
-MIT
-
-## 👨‍💻 Author
-
-Built as a demonstration of full-stack engineering capabilities.
+🔗 **Live Demo:** [Frontend on Vercel](https://trello-04.vercel.app/)
+🔗 **API Endpoint:** [Backend API on Render](https://trello-assignment-vwgh.onrender.com/)
 
 ---
 
-**Note**: This is a portfolio project demonstrating production-grade development practices.
+## ✨ Features Implemented
 
+### 📌 Core Features (100% Completed)
+- **Board Management:** Create, view, and manage multiple boards.
+- **Lists Management:** Create, edit, delete, and drag-and-drop to reorder lists smoothly.
+- **Cards Management:** Create, edit (title/description), delete/archive, and flawlessly drag-and-drop cards between or within lists.
+- **Card Details (Modal):**
+  - 🏷️ **Labels:** Add/remove colored tags.
+  - 📅 **Due Dates:** Set deadlines with visual "Overdue" or "Due Soon" badge indicators.
+  - ✅ **Checklists:** Create nested tasks and track progress dynamically with completion bars.
+  - 👥 **Members:** Assign users to specific tasks.
+- **Search & Filter:** Global search by card title, and robust filtering by labels, assigned members, or due dates.
 
-## ?? Assumptions Made
+### 🌟 Bonus / Good-to-Have Features
+- **Responsive Design:** Adapts smoothly across mobile, tablet, and desktop views.
+- **Multiple Boards Support:** Seamlessly navigate between different projects.
+- **File Attachments & Comments:** Upload files (via Cloudinary) and leave comments on cards.
+- **Card Covers & Customization:** Attach URLs or solid background colors to highlight cards.
+- **Board & List Background Customization:** Customize the workspace vibe globally and at the list-column level.
 
-- **Authentication**: As per the instructions, no authentication system was implemented. The application assumes a default logged-in user experience. Sample members were seeded into the database, and any action simulating user interaction operates under a global implicit auth state.
-- **Media Storage**: Cloudinary is used to securely store and deliver card image attachments/covers rather than storing them locally.
-- **Real-time Sync**: The frontend heavily uses Zustand for optimistic UI updates for instant drag-and-drop feedback, relying on fast REST API endpoints in the background rather than WebSockets.
+---
 
+## 🚀 Tech Stack
+
+- **Frontend:** Next.js 14, React, Tailwind CSS, Zustand (State Management), `@dnd-kit` (Drag & Drop).
+- **Backend:** Node.js, Express.js.
+- **Database:** PostgreSQL (via Supabase), Prisma ORM.
+- **Media Storage:** Cloudinary & Multer (for image/attachment uploads).
+
+---
+
+## 🛠️ Local Setup & Installation
+
+### Prerequisites
+- Node.js (v18+)
+- PostgreSQL / Supabase connection string
+
+### 1. Backend Setup
+```bash
+cd backend
+npm install
+```
+Create a `.env` file in the `backend` directory:
+```env
+PORT=5000
+DATABASE_URL=your_database_connection_string
+CLOUDINARY_CLOUD_NAME=your_cloudinary_name
+CLOUDINARY_API_KEY=your_api_key
+CLOUDINARY_API_SECRET=your_api_secret
+```
+Run migrations and start the server:
+```bash
+npx prisma db push
+npm run dev
+```
+
+### 2. Frontend Setup
+```bash
+cd frontend
+npm install
+```
+Create a `.env.local` file in the `frontend` directory:
+```env
+NEXT_PUBLIC_API_URL=http://localhost:5000/api
+```
+Start the development server:
+```bash
+npm run dev
+```
+Open `http://localhost:3000` in your browser to use the app.
+
+---
+
+## 🗄️ Database Design
+The application utilizes a relational database structure designed with Prisma ORM:
+- **Board:** Has many Lists and Members.
+- **List:** Has many Cards. Reordered via positional indexing.
+- **Card:** The central entity. Has many Comments, Attachments, Checklists, and Many-to-Many relations with Labels and Members. 
+- **Checklists & Items:** Nested relationships for granular task tracking.
+
+---
+
+## 💡 Assumptions Made (Assignment Rubric)
+
+- **Authentication:** As per the assignment instructions, no formal login/authentication system was implemented. The application operates under an assumed default user state to allow seamless testing of features.
+- **Sample Data / Members:** Sample members and data have been seeded directly into the database to support the assignment/filtering functionality.
+- **Media Storage:** Cloudinary is used to securely store and deliver card image attachments and covers rather than saving files locally. 
+- **Optimistic UI:** The frontend leverages Zustand to optimistically update the UI constraints during drag-and-drop interactions before the backend responds, ensuring a buttery-smooth Trello-like experience.
