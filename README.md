@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="https://logowik.com/content/uploads/images/trello-blue-icon9944.logowik.com.webp" width="100" alt="Trello Logo"/>
+<img src="https://logowik.com/content/uploads/images/trello-new2041.jpg" width="100" alt="Trello Logo"/>
   <h1>Trello Clone - Project Management Tool</h1>
   <p><strong>SDE Intern Fullstack Assignment</strong></p>
 
