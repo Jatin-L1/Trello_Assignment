@@ -95,15 +95,15 @@ export default function List({ list }: ListProps) {
     <div
       ref={setNodeRef}
       style={style}
-      className="w-72 flex-shrink-0 flex flex-col max-h-full"
+      className="w-[272px] flex-shrink-0 flex flex-col max-h-[100%]"
     >
       <div 
-        className={`rounded-lg flex flex-col max-h-full shadow-sm ${list.color ? '' : 'bg-trello-gray-100'}`}
+        className={`rounded-[12px] flex flex-col max-h-full shadow-[0_1px_1px_rgba(9,30,66,0.25)] ${list.color ? '' : 'bg-[#101204]'}`}
         style={list.color ? { backgroundColor: list.color } : {}}
       >
         
         {/* List Header */}
-        <div className="p-2 flex items-center justify-between" {...attributes} {...listeners}>
+        <div className="px-3 pt-[10px] pb-2 flex items-center justify-between group/header cursor-pointer" {...attributes} {...listeners}>
           {isEditingTitle ? (
             <input
               type="text"
@@ -117,28 +117,31 @@ export default function List({ list }: ListProps) {
                   setIsEditingTitle(false);
                 }
               }}
-              className="flex-1 px-2 py-1 text-sm font-semibold bg-white rounded border-2 border-trello-blue focus:outline-none"
+              className="flex-1 px-2 py-1 text-[14px] font-[600] bg-[#22272b] text-[#b6c2cf] rounded-[3px] border-2 border-[#579dff] focus:outline-none h-[28px] leading-[20px]"
               autoFocus
             />
           ) : (
             <h3
               onClick={() => setIsEditingTitle(true)}
-              className={`flex-1 px-2 py-1 text-sm font-semibold cursor-pointer rounded ${
-                list.color ? 'text-white hover:bg-white/20' : 'text-trello-gray-900 hover:bg-trello-gray-200'
+              className={`flex-1 px-2 py-1 text-[14px] font-[600] leading-[20px] rounded-[3px] ${
+                list.color ? 'text-[#1d2125] hover:bg-black/10' : 'text-[#b6c2cf]'
               }`}
             >
               {list.title}
             </h3>
           )}
           
-          <div className="relative">
+          <div className="relative flex items-center gap-[4px]">
             <button
-              onClick={() => setShowMenu(!showMenu)}
-              className={`p-1 rounded transition-colors ${
-                list.color ? 'text-white hover:bg-white/20' : 'text-trello-gray-700 hover:bg-trello-gray-200'
+              onClick={(e) => {
+                 e.stopPropagation();
+                 setShowMenu(!showMenu);
+              }}
+              className={`p-[6px] rounded-[3px] transition-colors ${
+                list.color ? 'text-[#1d2125] hover:bg-black/10' : 'text-[#9fadbc] hover:bg-[#a6c5e229]'
               }`}
             >
-              <MoreHorizontal className="w-4 h-4" />
+              <MoreHorizontal className="w-[16px] h-[16px]" />
             </button>
             
             {showMenu && (
@@ -147,38 +150,47 @@ export default function List({ list }: ListProps) {
                   className="fixed inset-0 z-10"
                   onClick={() => setShowMenu(false)}
                 />
-                <div className="absolute right-0 top-10 w-64 bg-white rounded-lg shadow-modal z-[100] py-2 border">
+                <div className="absolute right-0 top-10 w-[304px] bg-[#282e33] text-[#b6c2cf] rounded-[3px] shadow-[0_8px_16px_-4px_rgba(9,30,66,0.25),0_0_0_1px_rgba(9,30,66,0.08)] z-[100] py-3 cursor-default">
+                  <div className="flex items-center justify-center mb-3 relative px-3">
+                    <h4 className="text-[14px] font-[600] text-[#9fadbc]">List actions</h4>
+                    <button 
+                      onClick={() => setShowMenu(false)}
+                      className="absolute right-3 text-[#9fadbc] hover:bg-[#a6c5e229] p-1.5 rounded-[3px] transition-colors"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
                   
-                  <div className="px-3 pb-3 border-b">
-                    <h4 className="text-xs font-semibold text-trello-gray-600 uppercase mb-3 text-center">List Color</h4>
-                    <div className="grid grid-cols-5 gap-2 mb-3">
+                  <div className="px-3 mb-2">
+                    <div className="text-[12px] font-[600] text-[#9fadbc] uppercase mb-2">Colors</div>
+                    <div className="grid grid-cols-5 gap-2 mb-2">
                       {LIST_COLORS.map(color => (
                         <div
                           key={color}
                           onClick={() => handleUpdateColor(color)}
-                          className="h-8 rounded cursor-pointer hover:opacity-80 transition-opacity flex items-center justify-center"
+                          className="h-8 rounded-[3px] cursor-pointer hover:opacity-80 transition-opacity flex items-center justify-center relative group"
                           style={{ backgroundColor: color }}
                         >
-                          {list.color === color && <Check className="w-4 h-4 text-white" />}
+                          <div className="absolute inset-0 bg-black/10 group-hover:bg-black/20 rounded-[3px]" />
+                          {list.color === color && <Check className="w-4 h-4 text-white z-10 relative" />}
                         </div>
                       ))}
                     </div>
                     <button
                       onClick={handleRemoveColor}
-                      className="w-full py-1.5 text-xs font-semibold text-gray-700 bg-gray-100 hover:bg-gray-200 rounded transition-colors"
+                      className="w-full py-[6px] text-[14px] font-[500] text-[#b6c2cf] hover:bg-[#a6c5e229] rounded-[3px] transition-colors text-left px-3"
                     >
                       Remove color
                     </button>
                   </div>
                   
-                  <div className="py-2">
-                    <button
-                      onClick={handleDeleteList}
-                      className="w-full px-4 py-2 text-left text-sm hover:bg-trello-gray-100 text-red-600 font-medium"
-                    >
-                      Delete List
-                    </button>
-                  </div>
+                  <hr className="border-[#38414a] my-2" />
+                  <button
+                    onClick={handleDeleteList}
+                    className="w-full px-3 py-[6px] text-left text-[14px] text-[#b6c2cf] hover:bg-[#a6c5e229] transition-colors"
+                  >
+                    Archive this list
+                  </button>
                 </div>
               </>
             )}
@@ -186,19 +198,23 @@ export default function List({ list }: ListProps) {
         </div>
 
         {/* Cards */}
-        <div className="flex-1 overflow-y-auto px-2 pb-2 space-y-2">
-          <SortableContext
-            items={filteredCards.map((c) => c.id)}
-            strategy={verticalListSortingStrategy}
-          >
-            {filteredCards.map((card) => (
-              <Card key={card.id} card={card} listId={list.id} />
-            ))}
-          </SortableContext>
+        <div className="flex-1 overflow-y-auto px-[6px] overflow-x-hidden min-h-0 container-scrollbar">
+          <div className="flex flex-col gap-[8px] pb-2 pt-[2px]">
+            <SortableContext
+              items={filteredCards.map((c: any) => c.id)}
+              strategy={verticalListSortingStrategy}
+            >
+              {filteredCards.map((card: any) => (
+                <Card key={card.id} card={card} listId={list.id} />
+              ))}
+            </SortableContext>
+          </div>
+        </div>
 
-          {/* Add Card Form */}
-          {isAddingCard && (
-            <div className="space-y-2">
+        {/* List Footer */}
+        <div className="p-2 pt-0">
+          {isAddingCard ? (
+            <div className="flex flex-col gap-2 pt-2">
               <textarea
                 value={cardTitle}
                 onChange={(e) => setCardTitle(e.target.value)}
@@ -213,45 +229,51 @@ export default function List({ list }: ListProps) {
                   }
                 }}
                 placeholder="Enter a title for this card..."
-                className="w-full px-3 py-2 text-sm bg-white rounded-lg border-2 border-trello-blue focus:outline-none resize-none"
+                className="w-full p-2 text-[14px] text-[#b6c2cf] bg-[#22272b] rounded-[8px] shadow-[0_1px_1px_rgba(9,30,66,0.25),0_0_1px_rgba(9,30,66,0.31)] resize-none focus:outline-none focus:outline-[#85b8ff] focus:outline-offset-0 min-h-[64px]"
                 rows={3}
                 autoFocus
               />
               <div className="flex items-center gap-2">
                 <button
                   onClick={handleAddCard}
-                  className="btn btn-primary text-sm"
+                  className="bg-[#579dff] text-[#1d2125] font-[500] text-[14px] px-3 py-[6px] rounded-[3px] hover:bg-[#85b8ff] transition-colors leading-[20px]"
                 >
-                  Add Card
+                  Add card
                 </button>
                 <button
                   onClick={() => {
                     setIsAddingCard(false);
                     setCardTitle('');
                   }}
-                  className={`p-1 rounded transition-colors ${
-                    list.color ? 'text-white hover:bg-white/20' : 'hover:bg-trello-gray-200'
+                  className={`p-1 rounded-[3px] transition-colors ${
+                    list.color ? 'text-[#1d2125] hover:bg-black/10' : 'text-[#9fadbc] hover:bg-[#a6c5e229]'
                   }`}
                 >
                   <X className="w-5 h-5" />
                 </button>
               </div>
             </div>
+          ) : (
+            <div className="flex items-center justify-between cursor-pointer group hover:bg-[#a6c5e229] rounded-[8px] px-2 py-[6px] transition-colors mt-1">
+              <button
+                onClick={() => setIsAddingCard(true)}
+                className={`flex-1 flex items-center gap-[6px] text-[14px] font-[500] ${
+                  list.color ? 'text-[#1d2125]/80 hover:text-[#1d2125]' : 'text-[#9fadbc] hover:text-[#b6c2cf]'
+                }`}
+              >
+                <Plus className="w-[16px] h-[16px]" />
+                Add a card
+              </button>
+              <button className={`opacity-0 group-hover:opacity-100 p-1 rounded-[3px] transition-colors ${
+                  list.color ? 'text-[#1d2125]/80 hover:text-[#1d2125] hover:bg-black/10' : 'text-[#9fadbc] hover:text-[#b6c2cf] hover:bg-[#a6c5e229]'
+                }`}>
+                <div title="Create from template">
+                   <svg width="16" height="16" role="presentation" focusable="false" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" clipRule="evenodd" d="M19 4H5c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zM5 18V6h14v12H5zm2-10h6v6H7V8zm8 0h2v2h-2V8zm0 4h2v2h-2v-2z" fill="currentColor"></path></svg>
+                </div>
+              </button>
+            </div>
           )}
         </div>
-
-        {/* Add Card Button */}
-        {!isAddingCard && (
-          <button
-            onClick={() => setIsAddingCard(true)}
-            className={`mx-2 mb-2 px-3 py-2 text-sm rounded-lg transition-colors flex items-center gap-2 ${
-              list.color ? 'text-white hover:bg-white/20' : 'text-trello-gray-700 hover:bg-trello-gray-200'
-            }`}
-          >
-            <Plus className="w-4 h-4" />
-            Add a card
-          </button>
-        )}
       </div>
     </div>
   );

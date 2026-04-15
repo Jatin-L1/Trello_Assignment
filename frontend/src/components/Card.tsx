@@ -101,8 +101,8 @@ export default function Card({ card, listId, isDragging = false }: CardProps) {
 
   if (isDragging) {
     return (
-      <div className="bg-white rounded-lg p-3 shadow-card-hover rotate-3 cursor-grabbing">
-        <div className="font-medium text-sm text-trello-gray-900">{card.title}</div>
+      <div className="bg-[#22272b] rounded-[8px] p-3 shadow-sm rotate-3 cursor-grabbing">
+        <div className="font-[400] text-[14px] text-[#b6c2cf]">{card.title}</div>
       </div>
     );
   }
@@ -114,9 +114,13 @@ export default function Card({ card, listId, isDragging = false }: CardProps) {
         style={style}
         {...attributes}
         {...listeners}
-        onClick={() => setShowModal(true)}
-        className={`relative group bg-white rounded-lg shadow-card hover:shadow-card-hover transition-all cursor-pointer ${
-          isSortableDragging ? 'opacity-50' : ''
+        onClick={(e) => {
+          // ensure dragging doesn't trigger modal
+          if (isDragging) return;
+          setShowModal(true);
+        }}
+        className={`relative group bg-[#22272b] rounded-[8px] shadow-[0_1px_1px_rgba(9,30,66,0.25),0_0_1px_rgba(9,30,66,0.31)] cursor-pointer overflow-hidden ${
+          isSortableDragging ? 'opacity-50' : 'hover:outline hover:outline-2 hover:outline-[#85b8ff] hover:outline-offset-0'
         }`}
       >
         <button
@@ -124,7 +128,7 @@ export default function Card({ card, listId, isDragging = false }: CardProps) {
             e.stopPropagation();
             setShowColorMenu(!showColorMenu);
           }}
-          className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 p-1.5 bg-white/90 hover:bg-trello-gray-200 text-trello-gray-700 rounded transition-opacity z-10"
+          className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 p-[4px] bg-[#22272b]/90 hover:bg-[#a6c5e229] text-[#9fadbc] rounded-[4px] transition-colors z-10"
         >
           <MoreHorizontal className="w-4 h-4" />
         </button>
@@ -132,15 +136,15 @@ export default function Card({ card, listId, isDragging = false }: CardProps) {
         {showColorMenu && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/20">
             <div 
-              className="w-64 bg-white rounded-lg shadow-xl p-3 border relative"
+              className="w-64 bg-[#282e33] rounded-[3px] shadow-[0_8px_16px_-4px_rgba(9,30,66,0.25),0_0_0_1px_rgba(9,30,66,0.08)] p-3 relative text-[#b6c2cf]"
               onClick={(e) => e.stopPropagation()}
               onPointerDown={(e) => e.stopPropagation()}
             >
-              <div className="flex justify-between items-center mb-3">
-                <h4 className="text-xs font-semibold text-trello-gray-600 uppercase">Colors</h4>
+              <div className="flex justify-center items-center mb-3 relative">
+                <h4 className="text-[12px] font-[600] text-[#9fadbc] uppercase">Colors</h4>
                 <button 
                   onClick={(e) => { e.stopPropagation(); setShowColorMenu(false); }}
-                  className="text-gray-500 hover:text-gray-700"
+                  className="absolute right-0 text-[#9fadbc] hover:bg-[#a6c5e229] p-1 rounded-[3px] transition-colors"
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -150,16 +154,17 @@ export default function Card({ card, listId, isDragging = false }: CardProps) {
                   <div
                     key={color}
                     onClick={(e) => handleUpdateColor(e, color)}
-                    className="h-8 rounded cursor-pointer hover:opacity-80 transition-opacity flex items-center justify-center"
+                    className="h-8 rounded-[3px] cursor-pointer hover:opacity-80 transition-opacity flex items-center justify-center relative group"
                     style={{ backgroundColor: color }}
                   >
-                    {card.coverImage === color && <Check className="w-4 h-4 text-white" />}
+                    <div className="absolute inset-0 bg-black/10 group-hover:bg-black/20 rounded-[3px]" />
+                    {card.coverImage === color && <Check className="w-4 h-4 text-white z-10 relative" />}
                   </div>
                 ))}
               </div>
               <button
                 onClick={handleRemoveColor}
-                className="w-full py-1.5 text-xs font-semibold text-gray-700 bg-gray-100 hover:bg-gray-200 rounded transition-colors"
+                className="w-full py-[6px] text-[14px] font-[500] text-[#b6c2cf] bg-[#a6c5e229] hover:bg-[#a6c5e229]/80 rounded-[3px] transition-colors"
               >
                 Remove color
               </button>
@@ -169,19 +174,19 @@ export default function Card({ card, listId, isDragging = false }: CardProps) {
 
         {card.coverImage && (
           <div
-            className="h-8 bg-cover bg-center rounded-t-lg"
+            className="w-full bg-cover bg-center"
             style={
               card.coverImage.startsWith('#') 
-                ? { backgroundColor: card.coverImage }
-                : { backgroundImage: `url(${card.coverImage})`, height: '8rem' }
+                ? { backgroundColor: card.coverImage, height: '32px' }
+                : { backgroundImage: `url(${card.coverImage})`, height: '160px' }
             }
           />
         )}
         
-        <div className="p-3 space-y-2">
+        <div className="px-3 pt-2 pb-2 space-y-1 block">
           {/* Labels */}
           {card.labels && card.labels.length > 0 && (
-            <div className="flex flex-wrap gap-1">
+            <div className="flex flex-wrap gap-1 mb-1">
               {card.labels.map((label) => (
                 <div
                   key={label.id}
@@ -194,77 +199,80 @@ export default function Card({ card, listId, isDragging = false }: CardProps) {
           )}
 
           {/* Title */}
-          <div className="font-medium text-sm text-trello-gray-900 leading-tight">
+          <div className="font-[400] text-[14px] text-[#b6c2cf] leading-[20px] break-words">
             {card.title}
           </div>
 
           {/* Badges */}
-          <div className="flex flex-wrap items-center gap-2 text-xs text-trello-gray-700">
+          <div className="flex flex-wrap items-center gap-[12px] text-[12px] text-[#9fadbc] pt-1">
             {card.due_date && (
               <div
-                className={`flex items-center gap-1 px-1.5 py-0.5 rounded ${
+                className={`flex items-center gap-[4px] px-1 rounded-[3px] ${
                   isOverdue
-                    ? 'bg-red-100 text-red-700'
+                    ? 'bg-red-900 text-white'
                     : isDueSoon
-                    ? 'bg-yellow-100 text-yellow-700'
-                    : 'bg-trello-gray-100'
+                    ? 'bg-yellow-900 text-white'
+                    : 'hover:bg-[#a6c5e229]'
                 }`}
               >
-                <Calendar className="w-3 h-3" />
+                <Calendar className="w-[14px] h-[14px]" />
                 <span>{format(new Date(card.due_date), 'MMM d')}</span>
+              </div>
+            )}
+
+            {card.description && (
+              <div className="flex items-center hover:bg-[#a6c5e229] px-1 rounded-[3px]" title="This card has a description.">
+                <div className="w-[16px] h-[16px] flex items-center justify-center">
+                  <svg width="16" height="16" role="presentation" focusable="false" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" clipRule="evenodd" d="M4 6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v1h-16v-1zm16 3H4v13a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-13zm-9 3a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1h-4z" fill="currentColor"></path></svg>
+                </div>
+              </div>
+            )}
+            
+            {card.attachments && card.attachments.length > 0 && (
+              <div className="flex items-center gap-[4px] hover:bg-[#a6c5e229] px-1 rounded-[3px]" title="Attachments">
+                <Paperclip className="w-[14px] h-[14px] transform -rotate-45" />
+                <span>{card.attachments.length}</span>
               </div>
             )}
 
             {checklistStats && checklistStats.total > 0 && (
               <div
-                className={`flex items-center gap-1 px-1.5 py-0.5 rounded ${
+                className={`flex items-center gap-[4px] px-[4px] rounded-[3px] ${
                   checklistStats.completed === checklistStats.total
-                    ? 'bg-green-100 text-green-700'
-                    : 'bg-trello-gray-100'
+                    ? 'bg-[#1f845a] text-white hover:bg-[#1f845a]/80'
+                    : 'hover:bg-[#a6c5e229]'
                 }`}
+                title="Checklist items"
               >
-                <CheckSquare className="w-3 h-3" />
+                <CheckSquare className="w-[14px] h-[14px]" />
                 <span>
                   {checklistStats.completed}/{checklistStats.total}
                 </span>
               </div>
             )}
 
-            {card.description && (
-              <div className="flex items-center gap-1">
-                <MessageSquare className="w-3 h-3" />
-              </div>
-            )}
-
             {card.comments && card.comments.length > 0 && (
-              <div className="flex items-center gap-1">
-                <MessageSquare className="w-3 h-3" />
+              <div className="flex items-center gap-[4px] hover:bg-[#a6c5e229] px-1 rounded-[3px]" title="Comments">
+                <MessageSquare className="w-[14px] h-[14px]" />
                 <span>{card.comments.length}</span>
-              </div>
-            )}
-
-            {card.attachments && card.attachments.length > 0 && (
-              <div className="flex items-center gap-1">
-                <Paperclip className="w-3 h-3" />
-                <span>{card.attachments.length}</span>
               </div>
             )}
           </div>
 
           {/* Members */}
           {card.members && card.members.length > 0 && (
-            <div className="flex -space-x-1">
+            <div className="flex -space-x-1 pt-1 justify-end w-full">
               {card.members.slice(0, 3).map((member) => (
                 <div
                   key={member.id}
-                  className="w-6 h-6 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 border-2 border-white flex items-center justify-center text-white text-xs font-medium"
+                  className="w-6 h-6 rounded-full bg-[#1c2b41] border border-[#22272b] flex items-center justify-center text-white text-[12px] font-medium"
                   title={member.full_name}
                 >
                   {member.full_name?.charAt(0).toUpperCase()}
                 </div>
               ))}
               {card.members.length > 3 && (
-                <div className="w-6 h-6 rounded-full bg-trello-gray-300 border-2 border-white flex items-center justify-center text-trello-gray-700 text-xs font-medium">
+                <div className="w-6 h-6 rounded-full bg-[#a6c5e229] border border-[#22272b] flex items-center justify-center text-[#9fadbc] text-[12px] font-medium">
                   +{card.members.length - 3}
                 </div>
               )}

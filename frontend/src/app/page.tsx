@@ -196,17 +196,17 @@ export default function Home() {
         <aside className="w-[260px] flex-shrink-0 bg-[#1d2125] border-r border-[#38414a] overflow-y-auto hidden md:block px-3 py-4">
           <ul className="space-y-1 mb-4">
             <li>
-              <Link href="/" className="flex items-center gap-3 px-3 py-2 text-[#9fadbc] hover:bg-[#a6c5e229] hover:text-[#b6c2cf] rounded-md transition-colors text-[14px] font-semibold">
+              <Link href="/" className="flex items-center gap-3 px-3 py-2 bg-[#1c2b41] text-[#579dff] rounded-[3px] transition-colors text-[14px] font-[600]">
                 <Trello className="w-4 h-4" /> Boards
               </Link>
             </li>
             <li>
-              <Link href="/" className="flex items-center gap-3 px-3 py-2 text-[#9fadbc] hover:bg-[#a6c5e229] hover:text-[#b6c2cf] rounded-md transition-colors text-[14px] font-semibold">
+              <Link href="/" className="flex items-center gap-3 px-3 py-2 text-[#9fadbc] hover:bg-[#282e33] hover:text-[#b6c2cf] rounded-[3px] transition-colors text-[14px] font-[600]">
                 <LayoutTemplate className="w-4 h-4" /> Templates
               </Link>
             </li>
             <li>
-              <Link href="/" className="flex items-center gap-3 px-3 py-2 text-[#9fadbc] hover:bg-[#a6c5e229] hover:text-[#b6c2cf] rounded-md transition-colors text-[14px] font-semibold">
+              <Link href="/" className="flex items-center gap-3 px-3 py-2 text-[#9fadbc] hover:bg-[#282e33] hover:text-[#b6c2cf] rounded-[3px] transition-colors text-[14px] font-[600]">
                 <Activity className="w-4 h-4" /> Home
               </Link>
             </li>
@@ -220,29 +220,41 @@ export default function Home() {
               </button>
             </div>
             <div className="mt-1">
-              <button className="w-full flex items-center justify-between px-3 py-2 text-[#b6c2cf] bg-[#a6c5e229] rounded-md text-[14px] font-medium">
+              <button className="w-full flex items-center justify-between px-3 py-2 text-[#b6c2cf] hover:bg-[#282e33] rounded-[3px] text-[14px] font-[600] group transition-colors">
                 <div className="flex items-center gap-2">
-                  <div className="w-6 h-6 rounded bg-gradient-to-br from-purple-500 to-indigo-500 flex items-center justify-center text-white text-xs font-bold">
+                  <div className="w-[24px] h-[24px] rounded-[3px] bg-[#216e4e] flex items-center justify-center text-white text-[12px] font-bold">
                     T
                   </div>
                   Trello Workspace
                 </div>
+                <span className="text-[10px] transform transition-transform text-[#9fadbc] rotate-180">⏷</span>
               </button>
-              <ul className="pl-9 mt-1 space-y-1">
+              <ul className="pl-0 mt-1 space-y-[2px]">
                 <li>
-                  <button className="w-full flex items-center gap-2 px-3 py-2 text-[#9fadbc] hover:bg-[#a6c5e229] hover:text-[#b6c2cf] rounded-md text-[14px] font-medium transition-colors">
-                    <Trello className="w-4 h-4" /> Boards
+                  <button className="w-full flex items-center gap-3 px-3 py-[6px] text-[#9fadbc] bg-[#282e33] text-[#b6c2cf] rounded-[3px] text-[14px] font-[500] transition-colors ml-6 w-[calc(100%-24px)] group">
+                    <Trello className="w-4 h-4 text-[#9fadbc]" /> Boards
                   </button>
                 </li>
                 <li>
-                  <button className="w-full flex items-center gap-2 px-3 py-2 text-[#9fadbc] hover:bg-[#a6c5e229] hover:text-[#b6c2cf] rounded-md text-[14px] font-medium transition-colors">
-                    <Users className="w-4 h-4" /> Members
+                  <button className="w-full flex items-center justify-between px-3 py-[6px] text-[#9fadbc] hover:bg-[#282e33] hover:text-[#b6c2cf] rounded-[3px] text-[14px] font-[500] transition-colors ml-6 w-[calc(100%-24px)] group">
+                    <div className="flex items-center gap-3">
+                      <Users className="w-4 h-4 text-[#9fadbc]" /> Members
+                    </div>
+                    <Plus className="w-4 h-4 opacity-0 group-hover:opacity-100" />
                   </button>
                 </li>
                 <li>
-                  <button className="w-full flex items-center justify-between px-3 py-2 text-[#9fadbc] hover:bg-[#a6c5e229] hover:text-[#b6c2cf] rounded-md text-[14px] font-medium transition-colors">
-                    <div className="flex items-center gap-2">
-                      <Settings className="w-4 h-4" /> Settings
+                  <button className="w-full flex items-center justify-between px-3 py-[6px] text-[#9fadbc] hover:bg-[#282e33] hover:text-[#b6c2cf] rounded-[3px] text-[14px] font-[500] transition-colors ml-6 w-[calc(100%-24px)] group">
+                    <div className="flex items-center gap-3">
+                      <Settings className="w-4 h-4 text-[#9fadbc]" /> Settings
+                    </div>
+                    <span className="text-[10px] opacity-0 group-hover:opacity-100">⏷</span>
+                  </button>
+                </li>
+                <li>
+                  <button className="w-full flex items-center justify-between px-3 py-[6px] text-[#9fadbc] hover:bg-[#282e33] hover:text-[#b6c2cf] rounded-[3px] text-[14px] font-[500] transition-colors ml-6 w-[calc(100%-24px)] group">
+                    <div className="flex items-center gap-3">
+                      <Copy className="w-4 h-4 text-[#9fadbc]" /> Billing
                     </div>
                   </button>
                 </li>
@@ -279,10 +291,10 @@ export default function Home() {
             {filteredBoards.length > 0 && (
               <div className="mb-12">
                 <div className="flex items-center gap-2 text-[#b6c2cf] mb-4 font-bold text-[16px]">
-                  <Clock className="w-6 h-6" />
+                  <Clock className="w-5 h-5 text-[#9fadbc]" />
                   <h2>Recently viewed</h2>
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                   {filteredBoards.slice(0, 4).map((board) => (
                     <BoardCard 
                       key={board.id} 
@@ -297,25 +309,26 @@ export default function Home() {
 
             {/* Your Workspaces */}
             <div>
-              <div className="flex items-center justify-between mb-4">
+              <h2 className="text-[12px] font-bold text-[#9fadbc] uppercase tracking-wide mb-4">Your Workspaces</h2>
+              <div className="flex items-center justify-between mb-4 flex-wrap gap-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded bg-gradient-to-br from-purple-500 to-indigo-500 flex items-center justify-center text-white font-bold">
+                  <div className="w-8 h-8 rounded-[3px] bg-[#216e4e] flex items-center justify-center text-white font-bold text-[16px]">
                     T
                   </div>
                   <h2 className="text-[16px] font-bold text-[#b6c2cf]">Trello Workspace</h2>
                 </div>
                 <div className="flex items-center gap-2">
-                  <button className="hidden sm:flex items-center gap-1 text-[#b6c2cf] bg-[#a6c5e229] hover:bg-[#a6c5e229]/80 px-3 py-[6px] rounded transition-colors text-[14px] font-medium">
-                    <Trello className="w-4 h-4" /> Boards
+                  <button className="hidden sm:flex items-center gap-2 text-[#b6c2cf] bg-[#282e33] hover:bg-[#323940] px-3 py-[6px] rounded-[3px] transition-colors text-[14px] font-[500]">
+                    <Trello className="w-[14px] h-[14px]" /> Boards
                   </button>
-                  <button className="hidden sm:flex items-center gap-1 text-[#b6c2cf] bg-[#a6c5e229] hover:bg-[#a6c5e229]/80 px-3 py-[6px] rounded transition-colors text-[14px] font-medium">
-                    <Layout className="w-4 h-4" /> Views
+                  <button className="hidden sm:flex items-center gap-2 text-[#b6c2cf] bg-[#282e33] hover:bg-[#323940] px-3 py-[6px] rounded-[3px] transition-colors text-[14px] font-[500]">
+                    <Layout className="w-[14px] h-[14px]" /> Views
                   </button>
-                  <button className="hidden sm:flex items-center gap-1 text-[#b6c2cf] bg-[#a6c5e229] hover:bg-[#a6c5e229]/80 px-3 py-[6px] rounded transition-colors text-[14px] font-medium">
-                    <Users className="w-4 h-4" /> Members
+                  <button className="hidden sm:flex items-center gap-2 text-[#b6c2cf] bg-[#282e33] hover:bg-[#323940] px-3 py-[6px] rounded-[3px] transition-colors text-[14px] font-[500]">
+                    <Users className="w-[14px] h-[14px]" /> Members
                   </button>
-                  <button className="hidden sm:flex items-center gap-1 text-[#b6c2cf] bg-[#a6c5e229] hover:bg-[#a6c5e229]/80 px-3 py-[6px] rounded transition-colors text-[14px] font-medium">
-                    <Settings className="w-4 h-4" /> Settings
+                  <button className="hidden sm:flex items-center gap-2 text-[#b6c2cf] bg-[#282e33] hover:bg-[#323940] px-3 py-[6px] rounded-[3px] transition-colors text-[14px] font-[500]">
+                    <Settings className="w-[14px] h-[14px]" /> Settings
                   </button>
                 </div>
               </div>
@@ -336,14 +349,20 @@ export default function Home() {
                   {/* Create new board card */}
                   <button
                     onClick={() => setShowCreateModal(true)}
-                    className="flex items-center justify-center bg-[#282e33] hover:bg-[#323940] text-[#b6c2cf] h-[96px] rounded shadow-sm hover:shadow transition-all group border-none"
+                    className="flex items-center justify-center bg-[#282e33] hover:bg-[#323940] text-[#b6c2cf] h-[96px] rounded-[3px] shadow-none hover:shadow-sm transition-all group border-none"
                   >
-                    <span className="text-[14px] font-medium group-hover:underline">
+                    <span className="text-[14px] font-[500] group-hover:underline">
                       Create new board
                     </span>
                   </button>
                 </div>
               )}
+              
+              <div className="mt-6 flex">
+                <button className="bg-[#282e33] hover:bg-[#323940] text-[#b6c2cf] text-[14px] font-[500] px-3 py-[6px] rounded-[3px] transition-colors">
+                  View all closed boards
+                </button>
+              </div>
             </div>
           </div>
         </main>
