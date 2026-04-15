@@ -73,7 +73,7 @@ interface BoardStore {
   
   // Lists
   createList: (boardId: string, title: string) => Promise<void>;
-  updateList: (id: string, title: string) => Promise<void>;
+  updateList: (id: string, data: any) => Promise<void>;
   deleteList: (id: string) => Promise<void>;
   moveList: (id: string, position: number) => Promise<void>;
   
@@ -188,16 +188,16 @@ export const useBoardStore = create<BoardStore>((set, get) => ({
     }
   },
 
-  updateList: async (id: string, title: string) => {
+  updateList: async (id: string, data: any) => {
     try {
-      await api.updateList(id, { title });
+      await api.updateList(id, data);
       set((state) => {
         if (state.currentBoard) {
           return {
             currentBoard: {
               ...state.currentBoard,
               lists: (state.currentBoard.lists || []).map((list) =>
-                list.id === id ? { ...list, title } : list
+                list.id === id ? { ...list, ...data } : list
               ),
             },
           };

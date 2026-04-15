@@ -30,11 +30,14 @@ exports.createList = async (req, res, next) => {
 exports.updateList = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const { title } = req.body;
+    const { title, color } = req.body;
 
     const list = await prisma.list.update({
       where: { id },
-      data: { title },
+      data: {
+        ...(title && { title }),
+        ...(color !== undefined && { color }),
+      },
     });
 
     res.json({ success: true, data: list });

@@ -4,14 +4,20 @@ import { useState } from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
-import { MoreHorizontal, Plus, X } from 'lucide-react';
+import { MoreHorizontal, Plus, X, Check } from 'lucide-react';
 import Card from './Card';
 import { useBoardStore } from '@/store/boardStore';
+
+const LIST_COLORS = [
+  '#f87168', '#4bce97', '#579dff', '#8590a2', '#e2b203',
+  '#8f7ee7', '#00b8d9', '#ff991f', '#ff7452', '#86abce'
+];
 
 interface ListProps {
   list: {
     id: string;
     title: string;
+    color?: string;
     cards: any[];
   };
 }
@@ -75,13 +81,27 @@ export default function List({ list }: ListProps) {
     setShowMenu(false);
   };
 
+  const handleUpdateColor = async (color: string) => {
+    await updateList(list.id, { color });
+    setShowMenu(false);
+  };
+
+  const handleRemoveColor = async () => {
+    await updateList(list.id, { color: null });
+    setShowMenu(false);
+  };
+
   return (
     <div
       ref={setNodeRef}
       style={style}
       className="w-72 flex-shrink-0 flex flex-col max-h-full"
     >
-      <div className="bg-trello-gray-100 rounded-lg flex flex-col max-h-full shadow-sm">
+      <div 
+        className={`rounded-lg flex flex-col max-h-full shadow-sm overflow-hidden ${list.color ? '' : 'bg-trello-gray-100'}`}
+        style={list.color ? { backgroundColor: list.color } : {}}
+      >
+        
         {/* List Header */}
         <div className="p-2 flex items-center justify-between" {...attributes} {...listeners}>
           {isEditingTitle ? (
@@ -103,7 +123,9 @@ export default function List({ list }: ListProps) {
           ) : (
             <h3
               onClick={() => setIsEditingTitle(true)}
-              className="flex-1 px-2 py-1 text-sm font-semibold text-trello-gray-900 cursor-pointer hover:bg-trello-gray-200 rounded"
+              className={`flex-1 px-2 py-1 text-sm font-semibold cursor-pointer rounded ${
+                list.color ? 'text-white hover:bg-white/20' : 'text-trello-gray-900 hover:bg-trello-gray-200'
+              }`}
             >
               {list.title}
             </h3>
@@ -112,9 +134,11 @@ export default function List({ list }: ListProps) {
           <div className="relative">
             <button
               onClick={() => setShowMenu(!showMenu)}
-              className="p-1 hover:bg-trello-gray-200 rounded transition-colors"
+              className={`p-1 rounded transition-colors ${
+                list.color ? 'text-white hover:bg-white/20' : 'text-trello-gray-700 hover:bg-trello-gray-200'
+              }`}
             >
-              <MoreHorizontal className="w-4 h-4 text-trello-gray-700" />
+              <MoreHorizontal className="w-4 h-4" />
             </button>
             
             {showMenu && (
@@ -123,13 +147,38 @@ export default function List({ list }: ListProps) {
                   className="fixed inset-0 z-10"
                   onClick={() => setShowMenu(false)}
                 />
-                <div className="absolute right-0 top-8 w-48 bg-white rounded-lg shadow-modal z-20 py-2">
-                  <button
-                    onClick={handleDeleteList}
-                    className="w-full px-4 py-2 text-left text-sm hover:bg-trello-gray-100 text-red-600"
-                  >
-                    Delete List
-                  </button>
+                <div className="absolute right-0 top-8 w-64 bg-white rounded-lg shadow-modal z-20 py-2 border relative">
+                  
+                  <div className="px-3 pb-3 border-b">
+                    <h4 className="text-xs font-semibold text-trello-gray-600 uppercase mb-3 text-center">List Color</h4>
+                    <div className="grid grid-cols-5 gap-2 mb-3">
+                      {LIST_COLORS.map(color => (
+                        <div
+                          key={color}
+                          onClick={() => handleUpdateColor(color)}
+                          className="h-8 rounded cursor-pointer hover:opacity-80 transition-opacity flex items-center justify-center"
+                          style={{ backgroundColor: color }}
+                        >
+                          {list.color === color && <Check className="w-4 h-4 text-white" />}
+                        </div>
+                      ))}
+                    </div>
+                    <button
+                      onClick={handleRemoveColor}
+                      className="w-full py-1.5 text-xs font-semibold text-gray-700 bg-gray-100 hover:bg-gray-200 rounded transition-colors"
+                    >
+                      Remove color
+                    </button>
+                  </div>
+                  
+                  <div className="py-2">
+                    <button
+                      onClick={handleDeleteList}
+                      className="w-full px-4 py-2 text-left text-sm hover:bg-trello-gray-100 text-red-600 font-medium"
+                    >
+                      Delete List
+                    </button>
+                  </div>
                 </div>
               </>
             )}
@@ -180,7 +229,9 @@ export default function List({ list }: ListProps) {
                     setIsAddingCard(false);
                     setCardTitle('');
                   }}
-                  className="p-1 hover:bg-trello-gray-200 rounded"
+                  className={`p-1 rounded transition-colors ${
+                    list.color ? 'text-white hover:bg-white/20' : 'hover:bg-trello-gray-200'
+                  }`}
                 >
                   <X className="w-5 h-5" />
                 </button>
@@ -193,7 +244,9 @@ export default function List({ list }: ListProps) {
         {!isAddingCard && (
           <button
             onClick={() => setIsAddingCard(true)}
-            className="mx-2 mb-2 px-3 py-2 text-sm text-trello-gray-700 hover:bg-trello-gray-200 rounded-lg transition-colors flex items-center gap-2"
+            className={`mx-2 mb-2 px-3 py-2 text-sm rounded-lg transition-colors flex items-center gap-2 ${
+              list.color ? 'text-white hover:bg-white/20' : 'text-trello-gray-700 hover:bg-trello-gray-200'
+            }`}
           >
             <Plus className="w-4 h-4" />
             Add a card
